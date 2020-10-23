@@ -83,6 +83,7 @@ function startPlayerBase() {
 		keepGoing: false,
 		hasNaN: false,
 		hideChallenges: false,
+		framerate: false,
 		points: modInfo.initialStartPoints,
 		subtabs: {},
 	}
@@ -90,7 +91,7 @@ function startPlayerBase() {
 
 function getStartPlayer() {
 	playerdata = startPlayerBase()
-	
+
 	if (addedPlayerData) {
 		extradata = addedPlayerData()
 		for (thing in extradata)
@@ -159,7 +160,7 @@ function fixSave() {
 		if (player[layer].total !== undefined) player[layer].total = new Decimal (player[layer].total)
 
 		if (layers[layer].tabFormat && !Array.isArray(layers[layer].tabFormat)) {
-		
+
 			if(!Object.keys(layers[layer].tabFormat).includes(player.subtabs[layer].mainTabs)) player.subtabs[layer].mainTabs = Object.keys(layers[layer].tabFormat)[0]
 		}
 		if (layers[layer].microtabs) {
@@ -197,8 +198,10 @@ function fixData(defaultData, newData) {
 			if (newData[item] === undefined)
 				newData[item] = defaultData[item]
 		}
-	}	
+	}
 }
+
+var interval;
 
 function load() {
 	let get = localStorage.getItem(modInfo.id);
@@ -219,11 +222,12 @@ function load() {
 	updateTemp();
 	updateTemp();
 	loadVue();
+	toggleFramerate(50);
 }
 
 function exportSave() {
 	let str = btoa(JSON.stringify(player))
-	
+
 	const el = document.createElement("textarea");
 	el.value = str;
 	document.body.appendChild(el);
@@ -241,7 +245,7 @@ function importSave(imported=undefined, forced=false) {
 			return
 		player = tempPlr;
 		player.versionType = modInfo.id
-		fixSave()	
+		fixSave()
 		save()
 		window.location.reload()
 	} catch(e) {
@@ -251,12 +255,12 @@ function importSave(imported=undefined, forced=false) {
 
 function versionCheck() {
 	let setVersion = true
-	
+
 	if (player.versionType===undefined||player.version===undefined) {
 		player.versionType = modInfo.id
 		player.version = 0
 	}
-	
+
 	if (setVersion) {
 		if (player.versionType == modInfo.id && VERSION.num > player.version) player.keepGoing = false
 		player.versionType = getStartPlayer().versionType
@@ -312,6 +316,11 @@ function toggleOpt(name) {
 	player[name] = !player[name]
 	if (name == "hqTree") changeTreeQuality()
 	if (name == "oldStyle") updateStyle()
+	if (name == "framerate") {
+		let frame = [10, 15, 20, 25, 30, 40, 50, 60, "Max"];
+		FPS = frame[(frame.indexOf(FPS)+1)%9]
+		toggleFramerate((frame.indexOf(FPS) == 8) ? 0 : 1000/FPS)
+	}
 }
 
 var styleCooldown = 0;
@@ -333,7 +342,7 @@ function changeTreeQuality() {
 }
 
 function toggleAuto(toggle) {
-	player[toggle[0]][toggle[1]] = !player[toggle[0]][toggle[1]] 
+	player[toggle[0]][toggle[1]] = !player[toggle[0]][toggle[1]]
 }
 
 function adjustMSDisp() {
@@ -346,16 +355,16 @@ function milestoneShown(layer, id) {
 	auto = layers[layer].milestones[id].toggles
 
 	switch(player.msDisplay) {
-		case "always": 
+		case "always":
 			return true;
 			break;
-		case "automation": 
+		case "automation":
 			return (auto)||!complete
 			break;
 		case "incomplete":
 			return !complete
 			break;
-		case "never": 
+		case "never":
 			return false;
 			break;
 	}
@@ -377,7 +386,7 @@ function respecBuyables(layer) {
 function canAffordUpgrade(layer, id) {
 	let upg = tmp[layer].upgrades[id]
 	let cost = tmp[layer].upgrades[id].cost
-	return canAffordPurchase(layer, upg, cost) 
+	return canAffordPurchase(layer, upg, cost)
 }
 
 function hasUpgrade(layer, id){
@@ -441,11 +450,11 @@ function canAffordPurchase(layer, thing, cost) {
 	if (thing.currencyInternalName){
 		let name = thing.currencyInternalName
 		if (thing.currencyLocation){
-			return !(thing.currencyLocation[name].lt(cost)) 
+			return !(thing.currencyLocation[name].lt(cost))
 		}
 		else if (thing.currencyLayer){
 			let lr = thing.currencyLayer
-			return !(player[lr][name].lt(cost)) 
+			return !(player[lr][name].lt(cost))
 		}
 		else {
 			return !(player[name].lt(cost))
@@ -485,7 +494,7 @@ function buyUpg(layer, id) {
 	}
 	else {
 		if (player[layer].points.lt(cost)) return
-		player[layer].points = player[layer].points.sub(cost)	
+		player[layer].points = player[layer].points.sub(cost)
 	}
 	player[layer].upgrades.push(id);
 	if (upg.onPurchase != undefined)
@@ -539,7 +548,7 @@ function showTab(name) {
 
 	var toTreeTab = name == "tree"
 	player.tab = name
-	
+
 	if (toTreeTab != onTreeTab) {
 		document.getElementById("treeTab").className = toTreeTab ? "fullWidth" : "col left"
 		onTreeTab = toTreeTab
@@ -643,7 +652,7 @@ function prestigeButtonText(layer)
 	if(tmp[layer].type == "normal")
 		return `${ player[layer].points.lt(1e3) ? (tmp[layer].resetDescription !== undefined ? tmp[layer].resetDescription : "Reset for ") : ""}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource} ${tmp[layer].resetGain.lt(100) && player[layer].points.lt(1e3) ? `<br><br>Next at ${ (tmp[layer].roundUpCost ? formatWhole(tmp[layer].nextAt) : format(tmp[layer].nextAt))} ${ tmp[layer].baseResource }` : ""}`
 	else if(tmp[layer].type== "static")
-		return `${tmp[layer].resetDescription !== undefined ? tmp[layer].resetDescription : "Reset for "}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource}<br><br>${player[layer].points.lt(30) ? (tmp[layer].baseAmount.gte(tmp[layer].nextAt)&&(tmp[layer].canBuyMax !== undefined) && tmp[layer].canBuyMax?"Next:":"Req:") : ""} ${formatWhole(tmp[layer].baseAmount)} / ${(tmp[layer].roundUpCost ? formatWhole(tmp[layer].nextAtDisp) : format(tmp[layer].nextAtDisp))} ${ tmp[layer].baseResource }		
+		return `${tmp[layer].resetDescription !== undefined ? tmp[layer].resetDescription : "Reset for "}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource}<br><br>${player[layer].points.lt(30) ? (tmp[layer].baseAmount.gte(tmp[layer].nextAt)&&(tmp[layer].canBuyMax !== undefined) && tmp[layer].canBuyMax?"Next:":"Req:") : ""} ${formatWhole(tmp[layer].baseAmount)} / ${(tmp[layer].roundUpCost ? formatWhole(tmp[layer].nextAtDisp) : format(tmp[layer].nextAtDisp))} ${ tmp[layer].baseResource }
 		`
 	else if(tmp[layer].type == "none")
 		return ""
@@ -658,5 +667,5 @@ function prestigeButtonText(layer)
 function isFunction(obj) {
 	return !!(obj && obj.constructor && obj.call && obj.apply);
   };
-  
+
 document.title = modInfo.name

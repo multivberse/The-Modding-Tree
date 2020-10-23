@@ -2,6 +2,7 @@ var player;
 var needCanvasUpdate = true;
 var NaNalert = false;
 var gameEnded = false;
+var FPS = 20;
 
 // Don't change this
 const TMT_VERSION = {
@@ -40,7 +41,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 	if (tmp[layer].gainMult.lte(0)) return new Decimal(Infinity)
 	if (tmp[layer].gainExp.lte(0)) return new Decimal(Infinity)
 
-	if (type=="static") 
+	if (type=="static")
 	{
 		if (!tmp[layer].canBuyMax) canMax = false
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
@@ -73,7 +74,7 @@ function shouldNotify(layer){
 	if (layers[layer].shouldNotify){
 		return layers[layer].shouldNotify()
 	}
-	else 
+	else
 		return false
 }
 
@@ -82,7 +83,7 @@ function canReset(layer)
 	if(tmp[layer].type == "normal")
 		return tmp[layer].baseAmount.gte(tmp[layer].requires)
 	else if(tmp[layer].type== "static")
-		return tmp[layer].baseAmount.gte(tmp[layer].nextAt) 
+		return tmp[layer].baseAmount.gte(tmp[layer].nextAt)
 	if(tmp[layer].type == "none")
 		return false
 	else
@@ -120,7 +121,7 @@ function layerDataReset(layer, keep = []) {
 }
 
 function resetBuyables(layer){
-	if (layers[layer].buyables) 
+	if (layers[layer].buyables)
 		player[layer].buyables = getStartBuyables(layer)
 	player[layer].spentOnBuyables = new Decimal(0)
 }
@@ -146,14 +147,14 @@ function doReset(layer, force=false) {
 		if (tmp[layer].type=="static") {
 			if (tmp[layer].baseAmount.lt(tmp[layer].nextAt)) return;
 			gain =(tmp[layer].canBuyMax ? gain : 1)
-		} 
+		}
 		if (tmp[layer].type=="custom") {
 			if (!tmp[layer].canReset) return;
-		} 
+		}
 
 		if (layers[layer].onPrestige)
 			layers[layer].onPrestige(gain)
-		
+
 		addPoints(layer, gain)
 		updateMilestones(layer)
 		updateAchievements(layer)
@@ -168,7 +169,7 @@ function doReset(layer, force=false) {
 					if (!player[lrs[lr]].unlocked) player[lrs[lr]].unlockOrder++
 			}
 		}
-	
+
 		tmp[layer].baseAmount = new Decimal(0) // quick fix
 	}
 
@@ -214,7 +215,7 @@ function startChallenge(layer, x) {
 		delete player[layer].activeChallenge
 	} else {
 		enter = true
-	}	
+	}
 	doReset(layer, true)
 	if(enter) player[layer].activeChallenge = x
 
@@ -230,11 +231,11 @@ function canCompleteChallenge(layer, x)
 	if (challenge.currencyInternalName){
 		let name = challenge.currencyInternalName
 		if (challenge.currencyLocation){
-			return !(challenge.currencyLocation[name].lt(challenge.goal)) 
+			return !(challenge.currencyLocation[name].lt(challenge.goal))
 		}
 		else if (challenge.currencyLayer){
 			let lr = challenge.currencyLayer
-			return !(player[lr][name].lt(readData(challenge.goal))) 
+			return !(player[lr][name].lt(readData(challenge.goal)))
 		}
 		else {
 			return !(player[name].lt(challenge.cost))
@@ -314,26 +315,29 @@ function hardReset() {
 
 var ticking = false
 
-var interval = setInterval(function() {
-	if (player===undefined||tmp===undefined) return;
-	if (ticking) return;
-	if (gameEnded&&!player.keepGoing) return;
-	ticking = true
-	let now = Date.now()
-	let diff = (now - player.time) / 1e3
-	if (player.offTime !== undefined) {
-		if (player.offTime.remain > modInfo.offlineLimit * 3600000) player.offTime.remain = modInfo.offlineLimit * 3600000
-		if (player.offTime.remain > 0) {
-			let offlineDiff = Math.max(player.offTime.remain / 10, diff)
-			player.offTime.remain -= offlineDiff
-			diff += offlineDiff
+function toggleFramerate(ms) {
+	clearInterval(interval)
+	interval = setInterval(function() {
+		if (player===undefined||tmp===undefined) return;
+		if (ticking) return;
+		if (gameEnded&&!player.keepGoing) return;
+		ticking = true
+		let now = Date.now()
+		let diff = (now - player.time) / 1e3
+		if (player.offTime !== undefined) {
+			if (player.offTime.remain > modInfo.offlineLimit * 3600000) player.offTime.remain = modInfo.offlineLimit * 3600000
+			if (player.offTime.remain > 0) {
+				let offlineDiff = Math.max(player.offTime.remain / 10, diff)
+				player.offTime.remain -= offlineDiff
+				diff += offlineDiff
+			}
+			if (!player.offlineProd || player.offTime.remain <= 0) delete player.offTime
 		}
-		if (!player.offlineProd || player.offTime.remain <= 0) delete player.offTime
-	}
-	if (player.devSpeed) diff *= player.devSpeed
-	player.time = now
-	if (needCanvasUpdate) resizeCanvas();
-	updateTemp();
-	gameLoop(diff)
-	ticking = false
-}, 50)
+		if (player.devSpeed) diff *= player.devSpeed
+		player.time = now
+		if (needCanvasUpdate) resizeCanvas();
+		updateTemp();
+		gameLoop(diff)
+		ticking = false
+	}, ms)
+}
