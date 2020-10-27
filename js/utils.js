@@ -39,7 +39,7 @@ function format(decimal, precision=2) {
 		if (slog.gte(1e6)) return "F" + format(slog.floor())
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0)
 	} else if (decimal.gte("1e1000")) return exponentialFormat(decimal, 0)
-	else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
+	else if (decimal.gte(1e9)) return exponentialFormat(decimal, 3)
 	else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
 	else return commaFormat(decimal, precision)
 }
@@ -210,6 +210,7 @@ function load() {
 	fixSave()
 
 	player.tab = "tree"
+	player.devSpeed = 1
 	if (player.offlineProd) {
 		if (player.offTime === undefined) player.offTime = { remain: 0 }
 		player.offTime.remain += (Date.now() - player.time) / 1000
@@ -222,7 +223,7 @@ function load() {
 	updateTemp();
 	updateTemp();
 	loadVue();
-	toggleFramerate(50);
+	toggleFramerate(1000/60);
 }
 
 function exportSave() {

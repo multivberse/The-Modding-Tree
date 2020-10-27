@@ -26,7 +26,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return (hasUpgrade("p", 11))
+	return (hasUpgrade("u", 11))
 }
 
 // Calculate points/sec!
@@ -35,8 +35,8 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	if (hasUpgrade("p", 12)) gain = gain.times(upgradeEffect("p", 12))
-	if (hasUpgrade("p", 13)) gain = gain.times(upgradeEffect("p", 13))
+	if (hasUpgrade("u", 12)) gain = gain.times(upgradeEffect("u", 12))
+	if (hasUpgrade("u", 13)) gain = gain.times(upgradeEffect("u", 13))
 	gain = gain.times(new Decimal(2).pow(player["b"].points))
 	return gain
 }
