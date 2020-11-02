@@ -37,7 +37,7 @@ function getPointGen() {
 	let gain = new Decimal(1)
 	if (hasUpgrade("u", 12)) gain = gain.times(upgradeEffect("u", 12))
 	if (hasUpgrade("u", 13)) gain = gain.times(upgradeEffect("u", 13))
-	gain = gain.times(new Decimal(2).pow(player["b"].points))
+	gain = gain.times(new Decimal(2).pow(player["m"].points))
 	return gain
 }
 
