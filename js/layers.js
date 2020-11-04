@@ -21,6 +21,7 @@ addLayer("u", {
             if (hasUpgrade(this.layer, 22)) mult = mult.times(upgradeEffect(this.layer, 22))
             if (hasUpgrade(this.layer, 23)) mult = mult.times(upgradeEffect(this.layer, 23))
             if (hasUpgrade("m", 11)) mult = mult.times(upgradeEffect("m", 11))
+            if (hasUpgrade("g", 11)) mult = mult.times(upgradeEffect("g", 11))
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -31,6 +32,13 @@ addLayer("u", {
             {key: "u", description: "U: Reset for units", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
         layerShown(){return true},
+        doReset(resettingLayer) {
+			let keep = [];
+			if (hasMilestone("m", 0) && resettingLayer=="m") keep.push("upgrades")
+			if (layers[resettingLayer]) {
+				if (layers[resettingLayer].row > this.row) layerDataReset("u", keep)
+			} else layerDataReset("u", keep);
+		},
         upgrades: {
             rows: 2,
             cols: 4,
@@ -72,19 +80,19 @@ addLayer("u", {
             },
             22: {
                 title: "U2;2",
-                description: "Boost 1;2 based on unspent units.",
+                description: "Boost U1;2 based on unspent units.",
                 cost: new Decimal(30),
                 unlocked() { return hasUpgrade(this.layer, 21)},
                 effect() { return new Decimal(player[this.layer].points).add(10).slog(10).max(1).pow(0.4) },
-                effectDisplay() { return "^" + format(this.effect()) }
+                effectDisplay() { return "x" + format(this.effect()) }
             },
             23: {
                 title: "U2;3",
-                description: "Boost 1;3 based on points.",
+                description: "Boost U1;3 based on points.",
                 cost: new Decimal(100),
                 unlocked() { return hasUpgrade(this.layer, 21)},
                 effect() { return new Decimal(player.points).add(10).slog(10).max(1).pow(0.3) },
-                effectDisplay() { return "^" + format(this.effect()) }
+                effectDisplay() { return "x" + format(this.effect()) }
             },
             24: {
                 title: "U2;4",
@@ -106,6 +114,7 @@ addLayer("m", {
         startData() { return {
             unlocked: false,
 		  	points: new Decimal(0),
+            best: new Decimal(0),
         }},
         color: "#F0CA35",
         requires: new Decimal(1000), // Can be a function that takes requirement increases into account
@@ -113,7 +122,7 @@ addLayer("m", {
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
         type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-        exponent: 1.2, // Prestige currency exponent
+        exponent: 1.25, // Prestige currency exponent
         base: 5,
         branches: ["u"],
         effect() {
@@ -134,6 +143,7 @@ addLayer("m", {
             {key: "m", description: "M: Reset for multipliers", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
         layerShown() {return (player["u"].points.gte(100)) || player[this.layer].unlocked},
+        canBuyMax() {return hasMilestone("m", 1)},
         upgrades: {
             rows: 1,
             cols: 3,
@@ -157,6 +167,18 @@ addLayer("m", {
                 description: "Unlock 2 more unit upgrades.",
                 cost: new Decimal(5),
                 unlocked() { return hasUpgrade(this.layer, 11)},
+            }
+        },
+        milestones: {
+            0: {
+                requirementDescription: "3 Multipliers",
+                done() { return player["m"].best.gte(3) },
+                effectDescription: "Keep unit upgrades on reset.",
+            },
+            1: {
+                requirementDescription: "5 Multipliers",
+                done() { return player["m"].best.gte(5) },
+                effectDescription: "You can buy max multipliers.",
             }
         }
 })
