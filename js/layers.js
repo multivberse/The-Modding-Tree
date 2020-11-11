@@ -133,6 +133,9 @@ addLayer("m", {
             return mult
         },
         effectDescription() {return "which are multiplying point generation by x" + format(this.effect())},
+        update(diff) {
+            if (hasMilestone(this.layer, 2)) generatePoints("u", diff)
+        },
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
             mult = mult.div(tmp.d.powerEff)
@@ -179,9 +182,14 @@ addLayer("m", {
                 effectDescription: "Keep unit upgrades on reset.",
             },
             1: {
+                requirementDescription: "8 Multipliers",
+                done() { return player.m.best.gte(8) },
+                effectDescription: "You can buy max multipliers.",
+            },
+            2: {
                 requirementDescription: "9 Multipliers",
                 done() { return player.m.best.gte(9) },
-                effectDescription: "You can buy max multipliers.",
+                effectDescription: "You automatically gain 25% of unit gain per second."
             }
         }
 })
@@ -219,15 +227,21 @@ addLayer("d", {
             if (hasUpgrade(this.layer, 12)) gain = gain.mul(upgradeEffect(this.layer, 12))
             return gain
         },
-        powerEff() {return new Decimal(player[this.layer].power.add(1)).log10().add(1).pow(0.6)},
+        powerEff() {
+            eff = new Decimal(player[this.layer].power.add(1)).log10().add(1).pow(0.6)
+            if (hasUpgrade(this.layer, 13)) eff = eff.mul(upgradeEffect(this.layer, 13))
+            return eff
+        },
         tabFormat: ["main-display","prestige-button","blank",
-                    ["display-text", function() {return "You have " + format(player.d.power) + " division power, which divides the costs of multipliers and units by " + format(tmp.d.powerEff, 3)}, {}],
+                    ["raw-html", function() {return "You have <h3 id=\"points\">" + format(player.d.power) + "</h3> division power, which divides the costs of multipliers and units by <h3 id=\"points\">" + format(tmp.d.powerEff, 3)}],
+                    ["display-text", function() {return "<br>Your best dividers is " + formatWhole(player.d.best)},{}],
                     "blank","milestones","blank","upgrades"],
         update(diff) {
             if (player[this.layer].unlocked) player[this.layer].power = player[this.layer].power.add(this.powerGain().mul(diff))
         },
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
+            if (hasUpgrade(this.layer, 14)) mult = mult.div(upgradeEffect(this.layer, 14))
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -241,7 +255,7 @@ addLayer("d", {
         canBuyMax() {return hasMilestone("d", 1)},
         upgrades: {
             rows: 1,
-            cols: 2,
+            cols: 4,
             11: {
                 title: "D1;1",
                 description: "Units boost division power gain.",
@@ -255,6 +269,20 @@ addLayer("d", {
                 cost: new Decimal(4),
                 effect() { return new Decimal(player.d.best).add(1).pow(1/3) },
                 effectDisplay() { return "x" + format(this.effect()) },
+            },
+            13: {
+                title: "D1;3",
+                description: "Points boost division power effect.",
+                cost: new Decimal(5),
+                effect() { return new Decimal(player.points).div(100).add(10).slog(10).pow(1.1) },
+                effectDisplay() { return "x" + format(this.effect()) },
+            },
+            14: {
+                title: "D1;4",
+                description: "Division power affects dividers (to a lesser extent).",
+                cost: new Decimal(5),
+                effect() { return new Decimal(tmp.d.powerEff).pow(2/3) },
+                effectDisplay() { return "/" + format(this.effect()) }
             }
         },
         milestones: {
@@ -264,8 +292,8 @@ addLayer("d", {
                 effectDescription: "Keep unit upgrades on reset.",
             },
             1: {
-                requirementDescription: "9 Dividers",
-                done() { return player.d.best.gte(9) },
+                requirementDescription: "8 Dividers",
+                done() { return player.d.best.gte(8) },
                 effectDescription: "You can buy max dividers.",
             }
         }
