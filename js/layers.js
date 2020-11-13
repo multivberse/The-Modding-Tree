@@ -1,5 +1,6 @@
 var devSaveBank = ["eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNDM0NTE3ODA4NywiYXV0b3NhdmUiOnRydWUsIm5vdGlmeSI6e30sIm1zRGlzcGxheSI6ImFsd2F5cyIsIm9mZmxpbmVQcm9kIjp0cnVlLCJ2ZXJzaW9uVHlwZSI6Im15bW9kIiwidmVyc2lvbiI6IjAuMCIsInRpbWVQbGF5ZWQiOjcwMjUuNDMzODE2MzQ5Mjg3LCJrZWVwR29pbmciOmZhbHNlLCJoYXNOYU4iOmZhbHNlLCJoaWRlQ2hhbGxlbmdlcyI6ZmFsc2UsImZyYW1lcmF0ZSI6ZmFsc2UsInBvaW50cyI6IjE4MzI5OTk4LjU0OTU4MjIiLCJzdWJ0YWJzIjp7fSwidSI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiOTMyNiIsInVwZ3JhZGVzIjpbMTEsMTIsMTMsMjEsMjIsMjMsMTRdLCJtaWxlc3RvbmVzIjpbXSwiY2hhbGxlbmdlcyI6W10sInNwZW50T25CdXlhYmxlcyI6IjAiLCJidXlhYmxlcyI6e30sImNsaWNrYWJsZXMiOnt9LCJhY2hpZXZlbWVudHMiOltdfSwibSI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiNCIsImJ1eWFibGVzIjp7fSwiY2xpY2thYmxlcyI6e30sInNwZW50T25CdXlhYmxlcyI6IjAiLCJ1cGdyYWRlcyI6WzExLDEyLDEzXSwibWlsZXN0b25lcyI6W10sImFjaGlldmVtZW50cyI6W10sImNoYWxsZW5nZXMiOnt9fSwiYiI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiMCIsImJ1eWFibGVzIjp7fSwiY2xpY2thYmxlcyI6e30sInNwZW50T25CdXlhYmxlcyI6IjAiLCJ1cGdyYWRlcyI6WzExXSwibWlsZXN0b25lcyI6W10sImFjaGlldmVtZW50cyI6W10sImNoYWxsZW5nZXMiOnt9fSwiZGV2U3BlZWQiOjF9",
-"eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNDY5MDcxOTcyOCwiYXV0b3NhdmUiOnRydWUsIm5vdGlmeSI6e30sIm1zRGlzcGxheSI6ImFsd2F5cyIsIm9mZmxpbmVQcm9kIjp0cnVlLCJ2ZXJzaW9uVHlwZSI6Im15bW9kIiwidmVyc2lvbiI6IjAuMCIsInRpbWVQbGF5ZWQiOjgyMzcuNzYxOTU0OTk2NTM1LCJrZWVwR29pbmciOmZhbHNlLCJoYXNOYU4iOmZhbHNlLCJoaWRlQ2hhbGxlbmdlcyI6ZmFsc2UsImZyYW1lcmF0ZSI6ZmFsc2UsInBvaW50cyI6IjEzLjQ0MDAwMDAwMDAwMDAwMyIsInN1YnRhYnMiOnt9LCJ1Ijp7InVubG9ja2VkIjp0cnVlLCJwb2ludHMiOiIzIiwidXBncmFkZXMiOlsxMSwxMl0sIm1pbGVzdG9uZXMiOltdLCJjaGFsbGVuZ2VzIjpbXSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsImJ1eWFibGVzIjp7fSwiY2xpY2thYmxlcyI6e30sImFjaGlldmVtZW50cyI6W10sImFjdGl2ZUNoYWxsZW5nZSI6bnVsbH0sIm0iOnsidW5sb2NrZWQiOnRydWUsInBvaW50cyI6IjAiLCJiZXN0IjoiNSIsImJ1eWFibGVzIjp7fSwiY2xpY2thYmxlcyI6e30sInNwZW50T25CdXlhYmxlcyI6IjAiLCJ1cGdyYWRlcyI6WzExLDEyLDEzXSwibWlsZXN0b25lcyI6WyIwIl0sImFjaGlldmVtZW50cyI6W10sImNoYWxsZW5nZXMiOnt9fSwiZCI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiMSIsImJlc3QiOiI0IiwicG93ZXIiOiIxODk4LjM0MTkzMTA3NzEyMjEiLCJidXlhYmxlcyI6e30sImNsaWNrYWJsZXMiOnt9LCJzcGVudE9uQnV5YWJsZXMiOiIwIiwidXBncmFkZXMiOlsxMSwxMl0sIm1pbGVzdG9uZXMiOltdLCJhY2hpZXZlbWVudHMiOltdLCJjaGFsbGVuZ2VzIjp7fX0sImRldlNwZWVkIjoxLCJocVRyZWUiOmZhbHNlfQ=="]
+"eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNTI5MjI0MjEwNiwiYXV0b3NhdmUiOnRydWUsIm5vdGlmeSI6e30sIm1zRGlzcGxheSI6ImFsd2F5cyIsIm9mZmxpbmVQcm9kIjp0cnVlLCJ2ZXJzaW9uVHlwZSI6Im15bW9kIiwidmVyc2lvbiI6IjAuMS1iZXRhIiwidGltZVBsYXllZCI6MTg1Ni43NTgwOTU1NTM5NDUyLCJrZWVwR29pbmciOmZhbHNlLCJoYXNOYU4iOmZhbHNlLCJoaWRlQ2hhbGxlbmdlcyI6ZmFsc2UsImZyYW1lcmF0ZSI6dHJ1ZSwicG9pbnRzIjoiNzEyNjQuMjUzNzAzMzA3NzciLCJzdWJ0YWJzIjp7fSwidSI6eyJ1bmxvY2tlZCI6dHJ1ZSwiYmVzdCI6IjE0MDIiLCJwb2ludHMiOiIxNDAyIiwidXBncmFkZXMiOlsxMSwxMiwxMywyMSwyMiwyMywxNF0sIm1pbGVzdG9uZXMiOltdLCJjaGFsbGVuZ2VzIjpbXSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsImFjdGl2ZUNoYWxsZW5nZSI6bnVsbH0sIm0iOnsidW5sb2NrZWQiOnRydWUsInBvaW50cyI6IjIiLCJiZXN0IjoiNSIsImJ1eWFibGVzIjp7fSwiY2xpY2thYmxlcyI6e30sInNwZW50T25CdXlhYmxlcyI6IjAiLCJ1cGdyYWRlcyI6WzExLDEyLDEzXSwibWlsZXN0b25lcyI6WyIwIl0sImFjaGlldmVtZW50cyI6W10sImNoYWxsZW5nZXMiOnt9fSwiZCI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiMiIsImJlc3QiOiIyIiwicG93ZXIiOiIxMjIuMDI4NjgzMTA2ODEzNDYiLCJidXlhYmxlcyI6e30sImNsaWNrYWJsZXMiOnt9LCJzcGVudE9uQnV5YWJsZXMiOiIwIiwidXBncmFkZXMiOlsxMV0sIm1pbGVzdG9uZXMiOltdLCJhY2hpZXZlbWVudHMiOltdLCJjaGFsbGVuZ2VzIjp7fX0sImRldlNwZWVkIjoxfQ==",
+"eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNTI5NTM1OTg1NSwiYXV0b3NhdmUiOnRydWUsIm5vdGlmeSI6e30sIm1zRGlzcGxheSI6ImFsd2F5cyIsIm9mZmxpbmVQcm9kIjp0cnVlLCJ2ZXJzaW9uVHlwZSI6Im15bW9kIiwidmVyc2lvbiI6IjAuMS1iZXRhIiwidGltZVBsYXllZCI6NDk3NC41MjYzMzgzMDc0MzQsImtlZXBHb2luZyI6ZmFsc2UsImhhc05hTiI6ZmFsc2UsImhpZGVDaGFsbGVuZ2VzIjpmYWxzZSwiZnJhbWVyYXRlIjp0cnVlLCJwb2ludHMiOiI0NDgwMjM2MzAuMjk3NzI1NSIsInN1YnRhYnMiOnt9LCJ1Ijp7InVubG9ja2VkIjp0cnVlLCJiZXN0IjoiMzcwMjgyNyIsInBvaW50cyI6IjM3MDI4MjciLCJ1cGdyYWRlcyI6WzExLDEyLDEzLDIxLDIyLDIzLDE0LDI0XSwibWlsZXN0b25lcyI6W10sImNoYWxsZW5nZXMiOltdLCJzcGVudE9uQnV5YWJsZXMiOiIwIiwiYWN0aXZlQ2hhbGxlbmdlIjpudWxsfSwibSI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiNiIsImJlc3QiOiI2IiwiYnV5YWJsZXMiOnt9LCJjbGlja2FibGVzIjp7fSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsInVwZ3JhZGVzIjpbMTEsMTIsMTNdLCJtaWxlc3RvbmVzIjpbIjAiXSwiYWNoaWV2ZW1lbnRzIjpbXSwiY2hhbGxlbmdlcyI6e319LCJkIjp7InVubG9ja2VkIjp0cnVlLCJwb2ludHMiOiI0IiwiYmVzdCI6IjUiLCJwb3dlciI6IjM3NzEuNTIwNzYyMDA2NzY2IiwiYnV5YWJsZXMiOnt9LCJjbGlja2FibGVzIjp7fSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsInVwZ3JhZGVzIjpbMTEsMTIsMTMsMTRdLCJtaWxlc3RvbmVzIjpbIjAiXSwiYWNoaWV2ZW1lbnRzIjpbXSwiY2hhbGxlbmdlcyI6e319LCJkZXZTcGVlZCI6MX0="]
 
 addLayer("u", {
         name: "unit", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -7,6 +8,7 @@ addLayer("u", {
         position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         startData() { return {
             unlocked: true,
+            best: new Decimal(0),
 		  	points: new Decimal(0),
         }},
         color: "#66F542",
@@ -21,6 +23,7 @@ addLayer("u", {
             if (hasUpgrade(this.layer, 21)) mult = mult.times(2)
             if (hasUpgrade(this.layer, 22)) mult = mult.times(upgradeEffect(this.layer, 22))
             if (hasUpgrade(this.layer, 23)) mult = mult.times(upgradeEffect(this.layer, 23))
+            if (hasUpgrade(this.layer, 24)) mult = mult.times(upgradeEffect(this.layer, 24))
             if (hasUpgrade("m", 11)) mult = mult.times(upgradeEffect("m", 11))
             if (player.d.unlocked) mult = mult.times(tmp.d.powerEff)
             return mult
@@ -28,6 +31,9 @@ addLayer("u", {
         gainExp() { // Calculate the exponent on main currency from bonuses
             return new Decimal(1)
         },
+        tabFormat: ["main-display","prestige-button","blank",
+                   ["raw-html", function() {return (player.u.points.lt(1000))?("You have <b id=\"points\">" + format(player.points) + "</b> points"):""}],
+                    "blank","upgrades"],
         row: 0, // Row the layer is in on the tree (0 is the first row)
         hotkeys: [
             {key: "u", description: "U: Reset for units", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -64,7 +70,6 @@ addLayer("u", {
                 unlocked() { return hasUpgrade(this.layer, 12)},
                 effect() { return new Decimal(player.points).add(1).pow(0.2).mul((hasUpgrade(this.layer,23))?upgradeEffect(this.layer,23):1) },
                 effectDisplay() { return "x" + format(this.effect()) },
-                onPurchase() { player["m"].unlocked = true }
             },
             14: {
                 title: "U1;4",
@@ -115,11 +120,11 @@ addLayer("m", {
         position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         startData() { return {
             unlocked: false,
-		  	points: new Decimal(0),
+		  	    points: new Decimal(0),
             best: new Decimal(0),
         }},
         color: "#F0CA35",
-        requires: new Decimal(4000), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1000), // Can be a function that takes requirement increases into account
         resource: "multipliers", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -134,7 +139,7 @@ addLayer("m", {
         },
         effectDescription() {return "which are multiplying point generation by x" + format(this.effect())},
         update(diff) {
-            if (hasMilestone(this.layer, 2)) generatePoints("u", diff)
+            if (hasMilestone(this.layer, 2)) generatePoints("u", diff/4)
         },
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
@@ -148,7 +153,7 @@ addLayer("m", {
         hotkeys: [
             {key: "m", description: "M: Reset for multipliers", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
-        layerShown() {return (player.u.points.gte(100)) || player[this.layer].unlocked},
+        layerShown() {return player.u.best.gte(1) || player.m.unlocked},
         canBuyMax() {return hasMilestone("m", 1)},
         upgrades: {
             rows: 1,
@@ -202,19 +207,19 @@ addLayer("d", {
         position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         startData() { return {
             unlocked: false,
-		  	points: new Decimal(0),
+		      	points: new Decimal(0),
             best: new Decimal(0),
             power: new Decimal(0),
         }},
         color: "#8A75F0",
-        requires: new Decimal(4000), // Can be a function that takes requirement increases into account
+        requires: new Decimal(40000), // Can be a function that takes requirement increases into account
         resource: "dividers", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
         type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: 1.2, // Prestige currency exponent
         base: 5,
-        branches: ["u"],
+        branches: ["m","u"],
         effect() {
             mult = new Decimal(2).pow(player[this.layer].points).max(1)
             if (hasUpgrade(this.layer, 12)) mult = mult.times(upgradeEffect(this.layer, 12))
@@ -251,7 +256,7 @@ addLayer("d", {
         hotkeys: [
             {key: "d", description: "D: Reset for dividers", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
-        layerShown() {return (player.u.points.gte(100)) || player.d.unlocked},
+        layerShown() {return player.m.best.gte(1)},
         canBuyMax() {return hasMilestone("d", 1)},
         upgrades: {
             rows: 1,
