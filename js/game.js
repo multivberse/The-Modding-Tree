@@ -338,6 +338,7 @@ var ticking = false
 
 function toggleFramerate(ms) {
 	clearInterval(interval)
+	needCanvasUpdate = true;
 	interval = setInterval(function() {
 		if (player===undefined||tmp===undefined) return;
 		if (ticking) return;
