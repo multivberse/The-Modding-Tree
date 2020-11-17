@@ -84,7 +84,7 @@ function save() {
 function startPlayerBase() {
 	return {
 		tab: layoutInfo.startTab,
-		navTab: (layoutInfo.showTree ? "tree-tab" : "none"),
+		navTab: (layoutInfo.showTree ? "tree-tab" : "tree"),
 		time: Date.now(),
 		autosave: true,
 		notify: {},
@@ -101,7 +101,7 @@ function startPlayerBase() {
 		showStory: true,
 		points: modInfo.initialStartPoints,
 		subtabs: {},
-		lastSafeTab: (layoutInfo.showTree ? "none" : layoutInfo.startTab)
+		lastSafeTab: (layoutInfo.showTree ? "tree" : layoutInfo.startTab)
 	}
 }
 
@@ -611,7 +611,7 @@ var onTreeTab = true
 function showTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
 
-	var toTreeTab = name == "none"
+	var toTreeTab = name == "tree"
 	player.tab = name
 
 	if (toTreeTab != onTreeTab) {
@@ -619,7 +619,7 @@ function showTab(name) {
 		onTreeTab = toTreeTab
 		resizeCanvas()
 	}
-	if (player.navTab == "none" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
+	if (player.navTab == "tree" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
 	delete player.notify[name]
 	needCanvasUpdate = true
 }
@@ -635,7 +635,7 @@ function showNavTab(name) {
 
 
 function goBack() {
-	if (player.navTab !== "none") showTab("none")
+	if (player.navTab !== "tree") showTab("tree")
 	else showTab(player.lastSafeTab)
 }
 

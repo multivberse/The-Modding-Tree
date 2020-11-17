@@ -68,7 +68,7 @@ var systemComponents = {
 		</button>
 		`
 	},
-	
+
 	'layer-tab': {
 		props: ['layer', 'back', 'spacing'],
 		template: `<div v-bind:style="[tmp[layer].style ? tmp[layer].style : {}, (tmp[layer].tabFormat && !Array.isArray(tmp[layer].tabFormat)) ? tmp[layer].tabFormat[player.subtabs[layer].mainTabs].style : {}]">
@@ -108,7 +108,7 @@ var systemComponents = {
 	},
 
 	'overlay-head': {
-		template: `			
+		template: `
 		<div class="overlayThing" style="padding-bottom:7px; width: 90%">
 		<span v-if="player.devSpeed && player.devSpeed != 1" class="overlayThing">
 			<br>Dev Speed: {{format(player.devSpeed)}}x<br>
@@ -138,7 +138,7 @@ var systemComponents = {
         <h3>{{VERSION.withName}}</h3>
         <span v-if="modInfo.author">
             <br>
-            Made by {{modInfo.author}}	
+            Made by {{modInfo.author}}
         </span>
         <br>
         The Modding Tree {{TMT_VERSION.tmtNum}} by Acamaeda
@@ -179,7 +179,7 @@ var systemComponents = {
                 <tr>
                     <td><button class="opt" onclick="toggleOpt('hideChallenges')">Completed Challenges: {{ player.hideChallenges?"HIDDEN":"SHOWN" }}</button></td>
                 <!--	<td><button class="opt" onclick="toggleOpt('oldStyle')">Style: {{ player.oldStyle?"v1.0":"NEW" }}</button></td>-->
-            </tr> 
+            </tr>
         </table>`
     },
 
