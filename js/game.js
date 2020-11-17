@@ -1,13 +1,12 @@
 var player;
 var needCanvasUpdate = true;
-var NaNalert = false;
 var gameEnded = false;
 var FPS = 60;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.1.1",
-	tmtName: "We should have thought of this sooner!"
+	tmtNum: "2.2.1",
+	tmtName: "Uprooted"
 }
 
 function getResetGain(layer, useType = null) {
@@ -63,6 +62,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 
 // Return true if the layer should be highlighted. By default checks for upgrades only.
 function shouldNotify(layer){
+	if (player.tab == layer || player.navTab == layer) return false
 	for (id in tmp[layer].upgrades){
 		if (!isNaN(id)){
 			if (canAffordUpgrade(layer, id) && !hasUpgrade(layer, id) && tmp[layer].upgrades[id].unlocked){
@@ -71,8 +71,8 @@ function shouldNotify(layer){
 		}
 	}
 
-	if (layers[layer].shouldNotify){
-		return layers[layer].shouldNotify()
+	if (tmp[layer].shouldNotify){
+		return tmp[layer].shouldNotify
 	}
 	else
 		return false
@@ -93,6 +93,7 @@ function canReset(layer)
 function rowReset(row, layer) {
 	for (lr in ROW_LAYERS[row]){
 		if(layers[lr].doReset) {
+
 			player[lr].activeChallenge = null // Exit challenges on any row reset on an equal or higher row
 			layers[lr].doReset(layer)
 		}
@@ -102,18 +103,20 @@ function rowReset(row, layer) {
 }
 
 function layerDataReset(layer, keep = []) {
-	let storedData = {}
+	let storedData = {unlocked: player[layer].unlocked} // Always keep unlocked
 
 	for (thing in keep) {
 		if (player[layer][keep[thing]] !== undefined)
 			storedData[keep[thing]] = player[layer][keep[thing]]
 	}
 
-	player[layer] = layers[layer].startData();
+	layOver(player[layer], layers[layer].startData());
 	player[layer].upgrades = []
 	player[layer].milestones = []
-	player[layer].challenges = []
+	player[layer].challenges = getStartChallenges(layer)
 	resetBuyables(layer)
+	if (layers[layer].clickables && !player[layer].clickables)
+		player[layer].clickables = getStartClickables(layer)
 
 	for (thing in storedData) {
 		player[layer][thing] =storedData[thing]
@@ -212,7 +215,7 @@ function startChallenge(layer, x) {
 	if (!player[layer].unlocked) return
 	if (player[layer].activeChallenge == x) {
 		completeChallenge(layer, x)
-		delete player[layer].activeChallenge
+		player[layer].activeChallenge = null
 	} else {
 		enter = true
 	}
@@ -238,11 +241,11 @@ function canCompleteChallenge(layer, x)
 			return !(player[lr][name].lt(readData(challenge.goal)))
 		}
 		else {
-			return !(player[name].lt(challenge.cost))
+			return !(player[name].lt(challenge.goal))
 		}
 	}
 	else {
-		return !(player[layer].points.lt(challenge.cost))
+		return !(player.points.lt(challenge.goal))
 	}
 
 }
@@ -251,7 +254,7 @@ function completeChallenge(layer, x) {
 	var x = player[layer].activeChallenge
 	if (!x) return
 	if (! canCompleteChallenge(layer, x)){
-		delete player[layer].activeChallenge
+		 player[layer].activeChallenge = null
 		return
 	}
 	if (player[layer].challenges[x] < tmp[layer].challenges[x].completionLimit) {
@@ -259,7 +262,7 @@ function completeChallenge(layer, x) {
 		player[layer].challenges[x] += 1
 		if (layers[layer].challenges[x].onComplete) layers[layer].challenges[x].onComplete()
 	}
-	delete player[layer].activeChallenge
+	player[layer].activeChallenge = null
 	updateChallengeTemp(layer)
 }
 
@@ -284,12 +287,37 @@ function gameLoop(diff) {
 
 	addTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
-	for (layer in layers){
-		if (layers[layer].update) layers[layer].update(diff);
+
+	for (x = 0; x <= maxRow; x++){
+		for (item in TREE_LAYERS[x]) {
+			let layer = TREE_LAYERS[x][item]
+			if (tmp[layer].passiveGeneration) generatePoints(layer, diff*tmp[layer].passiveGeneration);
+			if (layers[layer].update) layers[layer].update(diff);
+		}
 	}
 
-	for (layer in layers){
-		if (layers[layer].automate) layers[layer].automate();
+	for (row in OTHER_LAYERS){
+		for (item in OTHER_LAYERS[row]) {
+			let layer = OTHER_LAYERS[row][item]
+			if (tmp[layer].passiveGeneration) generatePoints(layer, diff*tmp[layer].passiveGeneration);
+			if (layers[layer].update) layers[layer].update(diff);
+		}
+	}
+
+	for (x = maxRow; x >= 0; x--){
+		for (item in TREE_LAYERS[x]) {
+			let layer = TREE_LAYERS[x][item]
+			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
+			if (layers[layer].automate) layers[layer].automate();
+		}
+	}
+
+	for (row in OTHER_LAYERS){
+		for (item in OTHER_LAYERS[row]) {
+			let layer = OTHER_LAYERS[row][item]
+			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
+			if (layers[layer].automate) layers[layer].automate();
+		}
 	}
 
 	for (layer in layers){
@@ -297,13 +325,6 @@ function gameLoop(diff) {
 		if (layers[layer].achievements) updateAchievements(layer)
 	}
 
-	if (player.hasNaN&&!NaNalert) {
-		clearInterval(interval);
-		player.autosave = false;
-		NaNalert = true;
-
-		alert("We have detected a corruption in your save. Please visit one of the discords in the info panel for help.")
-	}
 }
 
 function hardReset() {
@@ -335,9 +356,15 @@ function toggleFramerate(ms) {
 		}
 		if (player.devSpeed) diff *= player.devSpeed
 		player.time = now
-		if (needCanvasUpdate) resizeCanvas();
+		if (needCanvasUpdate) {
+			resizeCanvas();
+			needCanvasUpdate = false;
+		}
 		updateTemp();
 		gameLoop(diff)
+		fixNaNs()
 		ticking = false
 	}, ms)
 }
+
+setInterval(function() {needCanvasUpdate = true}, 500)
