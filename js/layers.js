@@ -87,7 +87,7 @@ addLayer("u", {
             },
             22: {
                 title: "U2;2",
-                description: "Unspent units boost U1;2's effect.",
+                description: "U1;2 uses a better formula based on units.",
                 cost: new Decimal(75),
                 unlocked() { return hasUpgrade(this.layer, 21)},
                 effect() { return new Decimal(player[this.layer].points).add(10).log(10).max(1).pow(0.4) },
@@ -95,7 +95,7 @@ addLayer("u", {
             },
             23: {
                 title: "U2;3",
-                description: "Points boost U1;3's effect.",
+                description: "U1;3 uses a better formula based on points.",
                 cost: new Decimal(500),
                 unlocked() { return hasUpgrade(this.layer, 21)},
                 effect() { return new Decimal(player.points).add(10).log(10).max(1).pow(0.3) },
@@ -138,6 +138,9 @@ addLayer("m", {
             return mult
         },
         effectDescription() {return "which are multiplying point generation by x" + format(this.effect())},
+        tabFormat: ["main-display","prestige-button","blank",
+                    ["raw-html", function() {return "Your best multipliers is <b id=\"points\">" + formatWhole(player.m.best)}],
+                    "blank","milestones","blank","upgrades"],
         update(diff) {
             if (hasMilestone(this.layer, 2)) generatePoints("u", diff/4)
         },
@@ -239,7 +242,7 @@ addLayer("d", {
         },
         tabFormat: ["main-display","prestige-button","blank",
                     ["raw-html", function() {return "You have <h3 id=\"points\">" + format(player.d.power) + "</h3> division power, which divides the costs of multipliers and units by <h3 id=\"points\">" + format(tmp.d.powerEff, 3)}],
-                    ["display-text", function() {return "<br>Your best dividers is " + formatWhole(player.d.best)},{}],
+                    ["display-text", function() {return "<br>Your best dividers is <b id=\"points\">" + formatWhole(player.d.best)},{}],
                     "blank","milestones","blank","upgrades"],
         update(diff) {
             if (player[this.layer].unlocked) player[this.layer].power = player[this.layer].power.add(this.powerGain().mul(diff))
@@ -257,6 +260,9 @@ addLayer("d", {
             {key: "d", description: "D: Reset for dividers", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
         layerShown() {return player.m.best.gte(1)},
+        doReset() {
+            player.d.power = new Decimal(0)
+        },
         canBuyMax() {return hasMilestone("d", 1)},
         upgrades: {
             rows: 1,
