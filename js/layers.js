@@ -32,7 +32,7 @@ addLayer("u", {
             return new Decimal(1)
         },
         tabFormat: ["main-display","prestige-button","blank",
-                   ["raw-html", function() {return (player.u.points.lt(1000))?("You have <b id=\"points\">" + format(player.points) + "</b> points"):""}],
+                   ["raw-html", function() {return (player.u.points.lt(1000))?("You have <h5 id='color:#ffffff;'>" + format(player.points) + "</h5> points"):""}],
                     "blank","upgrades"],
         row: 0, // Row the layer is in on the tree (0 is the first row)
         hotkeys: [
@@ -87,19 +87,17 @@ addLayer("u", {
             },
             22: {
                 title: "U2;2",
-                description: "U1;2 uses a better formula based on units.",
+                description: "U1;2 uses a better formula.",
                 cost: new Decimal(75),
                 unlocked() { return hasUpgrade(this.layer, 21)},
-                effect() { return new Decimal(player[this.layer].points).add(10).log(10).max(1).pow(0.4) },
-                effectDisplay() { return "x" + format(this.effect()) }
+                effect() { return new Decimal(player[this.layer].points).add(10).log(4).max(1).pow(0.4) }
             },
             23: {
                 title: "U2;3",
-                description: "U1;3 uses a better formula based on points.",
+                description: "U1;3 uses a better formula.",
                 cost: new Decimal(500),
                 unlocked() { return hasUpgrade(this.layer, 21)},
-                effect() { return new Decimal(player.points).add(10).log(10).max(1).pow(0.3) },
-                effectDisplay() { return "x" + format(this.effect()) }
+                effect() { return new Decimal(player.points).add(10).log(4).max(1).pow(0.3) }
             },
             24: {
                 title: "U2;4",
@@ -137,9 +135,9 @@ addLayer("m", {
             if (hasUpgrade(this.layer, 12)) mult = mult.times(upgradeEffect(this.layer, 12))
             return mult
         },
-        effectDescription() {return "which are multiplying point generation by x" + format(this.effect())},
-        tabFormat: ["main-display","prestige-button","blank",
-                    ["raw-html", function() {return "Your best multipliers is <b id=\"points\">" + formatWhole(player.m.best)}],
+        tabFormat: [["raw-html", function() {return "You have " + layerText("h2", "m", formatWhole(player.m.points)) + " multipliers, which are multiplying point generation by x" + layerText("h4", "m", format(tmp.m.effect))}],
+                    "blank","prestige-button","blank",
+                    ["raw-html", function() {return "Your best multipliers is " + layerText("h5", "m", formatWhole(player.m.best))}],
                     "blank","milestones","blank","upgrades"],
         update(diff) {
             if (hasMilestone(this.layer, 2)) generatePoints("u", diff/4)
@@ -227,9 +225,7 @@ addLayer("d", {
             mult = new Decimal(2).pow(player[this.layer].points).max(1)
             if (hasUpgrade(this.layer, 12)) mult = mult.times(upgradeEffect(this.layer, 12))
             return mult
-        },
-        effectDescription() {return "which are generating " + format(this.powerGain()) + " division power/sec"},
-        powerGain() {
+        },powerGain() {
             gain = new Decimal(2).pow(player[this.layer].points).sub(1).mul(0.1).max(0)
             if (hasUpgrade(this.layer, 11)) gain = gain.mul(upgradeEffect(this.layer, 11))
             if (hasUpgrade(this.layer, 12)) gain = gain.mul(upgradeEffect(this.layer, 12))
@@ -240,9 +236,10 @@ addLayer("d", {
             if (hasUpgrade(this.layer, 13)) eff = eff.mul(upgradeEffect(this.layer, 13))
             return eff
         },
-        tabFormat: ["main-display","prestige-button","blank",
-                    ["raw-html", function() {return "You have <h3 id=\"points\">" + format(player.d.power) + "</h3> division power, which divides the costs of multipliers and units by <h3 id=\"points\">" + format(tmp.d.powerEff, 3)}],
-                    ["display-text", function() {return "<br>Your best dividers is <b id=\"points\">" + formatWhole(player.d.best)},{}],
+        tabFormat: [["raw-html", function() {return "You have " + layerText("h2", "d", formatWhole(player.d.points)) + " dividers, which are generating <h4 style='color:#8a75f0;'>" + format(tmp.d.powerGain) + "</h4> division power/sec"}],
+                    "blank","prestige-button","blank",
+                    ["raw-html", function() {return "You have " + layerText("h4", "d", format(player.d.power)) + " division power, which divides the costs of multipliers and units by " + layerText("h4", "d", format(tmp.d.powerEff, 3))}],
+                    ["display-text", function() {return "<br>Your best dividers is " + layerText("h5", "d", formatWhole(player.d.best))},{}],
                     "blank","milestones","blank","upgrades"],
         update(diff) {
             if (player[this.layer].unlocked) player[this.layer].power = player[this.layer].power.add(this.powerGain().mul(diff))

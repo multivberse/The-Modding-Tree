@@ -775,6 +775,10 @@ function prestigeButtonText(layer)
 		return layers[layer].prestigeButtonText()
 }
 
+function layerText(elem, layer, text) {
+	return "<" + elem + " style='color:" + tmp[layer].color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
+}
+
 function isFunction(obj) {
 	return !!(obj && obj.constructor && obj.call && obj.apply);
   };

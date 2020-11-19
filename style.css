@@ -61,6 +61,20 @@ h1, h2, h3, b, input {
 	font-family: "Lucida Console", "Courier New", monospace
 }
 
+h4 {
+	display: inline;
+	font-family: "Lucida Console", "Courier New", monospace;
+	font-size: 1.17em;
+	text-shadow: 0px 0px 10px
+}
+
+h5 {
+	display: inline;
+	font-family: "Lucida Console", "Courier New", monospace;
+	font-size: 1em;
+	text-shadow: 0px 0px 10px
+}
+
 
 
 .treeNode {
