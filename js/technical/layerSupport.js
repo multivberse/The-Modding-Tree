@@ -22,7 +22,10 @@ function updateHotkeys()
         if (hk){
             for (id in hk){
 				hotkeys[hk[id].key] = hk[id]
-				hotkeys[hk[id].key].layer = layer
+                hotkeys[hk[id].key].layer = layer
+                hotkeys[hk[id].key].id = id
+                if (hk[id].unlocked === undefined)
+                    hk[id].unlocked = true
             }
         }
     }
@@ -138,6 +141,8 @@ function updateLayers(){
         if(layers[layer].gainExp === undefined) layers[layer].gainExp = new Decimal(1)
         if(layers[layer].type === undefined) layers[layer].type = "none"
         if(layers[layer].base === undefined || layers[layer].base <= 1) layers[layer].base = 2
+        if(layers[layer].softcap === undefined) layers[layer].softcap = new Decimal("e1e7")
+        if(layers[layer].softcapPower === undefined) layers[layer].softcapPower = new Decimal("0.5")
 
         let row = layers[layer].row
         if(!ROW_LAYERS[row]) ROW_LAYERS[row] = {}
@@ -176,7 +181,7 @@ function addLayer(layerName, layerData){ // Call this to add layers from a diffe
     layers[layerName].isLayer = true
 }
 
-function addNode(layerName, layerData){ // Does the same thing
+function addNode(layerName, layerData){ // Does the same thing, but for non-layer nodes
     layers[layerName] = layerData
     layers[layerName].isLayer = false
 }
