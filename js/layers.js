@@ -11,7 +11,7 @@ addLayer("u", {
             best: new Decimal(0),
 		  	points: new Decimal(0),
         }},
-        color: "#66F542",
+        color: "#BFFFDE",
         requires: new Decimal(10), // Can be a function that takes requirement increases into account
         resource: "units", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
@@ -19,7 +19,7 @@ addLayer("u", {
         type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: 0.5, // Prestige currency exponent
         gainMult() { // Calculate the multiplier for main currency from bonuses
-            mult = new Decimal(1)
+            var mult = new Decimal(1)
             if (hasUpgrade(this.layer, 21)) mult = mult.times(2)
             if (hasUpgrade(this.layer, 22)) mult = mult.times(upgradeEffect(this.layer, 22))
             if (hasUpgrade(this.layer, 23)) mult = mult.times(upgradeEffect(this.layer, 23))
@@ -31,13 +31,15 @@ addLayer("u", {
         gainExp() { // Calculate the exponent on main currency from bonuses
             return new Decimal(1)
         },
-        tabFormat: ["main-display","prestige-button","blank",
+        tabFormat: [["raw-html", function() {return "You have " + layerText("h2", "u", formatWhole(player.u.points)) + " units"}],
+                    "blank","prestige-button","blank",
                    ["raw-html", function() {return (player.u.points.lt(1000))?("You have <h5 id='color:#ffffff;'>" + format(player.points) + "</h5> points"):""}],
                     "blank","upgrades"],
         row: 0, // Row the layer is in on the tree (0 is the first row)
         hotkeys: [
             {key: "u", description: "U: Reset for units", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
+        passiveGeneration() {return (hasMilestone("m", 2))?0.25:0},
         layerShown(){return true},
         doReset(resettingLayer) {
 			let keep = [];
@@ -130,20 +132,29 @@ addLayer("m", {
         exponent: 1.2, // Prestige currency exponent
         base: 5,
         branches: ["u"],
+        addBase() {
+            var base = new Decimal(0)
+            if (player.p.unlocked) base = base.plus(tmp.p.effect)
+            return base
+        },
+        effectBase() {
+            var base = new Decimal(2)
+            base = base.plus(tmp.m.addBase)
+            return base
+        },
         effect() {
-            mult = new Decimal(2).pow(player[this.layer].points).max(1)
+            var mult = new Decimal(tmp.m.effectBase)
+                    .pow(player.m.points)
+                    .add(tmp.m.addBase)
             if (hasUpgrade(this.layer, 12)) mult = mult.times(upgradeEffect(this.layer, 12))
-            return mult
+            return mult.max(1)
         },
         tabFormat: [["raw-html", function() {return "You have " + layerText("h2", "m", formatWhole(player.m.points)) + " multipliers, which are multiplying point generation by x" + layerText("h4", "m", format(tmp.m.effect))}],
                     "blank","prestige-button","blank",
                     ["raw-html", function() {return "Your best multipliers is " + layerText("h5", "m", formatWhole(player.m.best))}],
                     "blank","milestones","blank","upgrades"],
-        update(diff) {
-            if (hasMilestone(this.layer, 2)) generatePoints("u", diff/4)
-        },
         gainMult() { // Calculate the multiplier for main currency from bonuses
-            mult = new Decimal(1)
+            var mult = new Decimal(1)
             mult = mult.div(tmp.d.powerEff)
             return mult
         },
@@ -156,9 +167,16 @@ addLayer("m", {
         ],
         layerShown() {return player.u.best.gte(1) || player.m.unlocked},
         canBuyMax() {return hasMilestone("m", 1)},
+        doReset(resettingLayer) {
+			let keep = [];
+			if (hasMilestone("p", 0) && resettingLayer=="p") keep.push("milestones")
+			if (layers[resettingLayer]) {
+				if (layers[resettingLayer].row > this.row) layerDataReset("m", keep)
+			} else layerDataReset("m", keep);
+		},
         upgrades: {
             rows: 1,
-            cols: 3,
+            cols: 4,
             11: {
                 title: "M1;1",
                 description: "Your best multipliers boost unit gain.",
@@ -179,6 +197,12 @@ addLayer("m", {
                 description: "Unlock a new column of unit upgrades.",
                 cost: new Decimal(5),
                 unlocked() { return hasUpgrade(this.layer, 11)},
+            },
+            14: {
+                title: "M1;4",
+                description: "Unlock a new layer.",
+                cost: new Decimal(9),
+                unlocked() { return hasUpgrade(this.layer, 13)},
             }
         },
         milestones: {
@@ -222,17 +246,18 @@ addLayer("d", {
         base: 5,
         branches: ["m","u"],
         effect() {
-            mult = new Decimal(2).pow(player[this.layer].points).max(1)
+            var mult = new Decimal(2).pow(player[this.layer].points).max(1)
             if (hasUpgrade(this.layer, 12)) mult = mult.times(upgradeEffect(this.layer, 12))
             return mult
-        },powerGain() {
-            gain = new Decimal(2).pow(player[this.layer].points).sub(1).mul(0.1).max(0)
+        },
+        powerGain() {
+            var gain = new Decimal(2).pow(player[this.layer].points).sub(1).mul(0.1).max(0)
             if (hasUpgrade(this.layer, 11)) gain = gain.mul(upgradeEffect(this.layer, 11))
             if (hasUpgrade(this.layer, 12)) gain = gain.mul(upgradeEffect(this.layer, 12))
             return gain
         },
         powerEff() {
-            eff = new Decimal(player[this.layer].power.add(1)).log10().add(1).pow(0.6)
+            var eff = new Decimal(player[this.layer].power.add(1)).log10().add(1).pow(0.6)
             if (hasUpgrade(this.layer, 13)) eff = eff.mul(upgradeEffect(this.layer, 13))
             return eff
         },
@@ -245,7 +270,7 @@ addLayer("d", {
             if (player[this.layer].unlocked) player[this.layer].power = player[this.layer].power.add(this.powerGain().mul(diff))
         },
         gainMult() { // Calculate the multiplier for main currency from bonuses
-            mult = new Decimal(1)
+            var mult = new Decimal(1)
             if (hasUpgrade(this.layer, 14)) mult = mult.div(upgradeEffect(this.layer, 14))
             return mult
         },
@@ -256,7 +281,7 @@ addLayer("d", {
         hotkeys: [
             {key: "d", description: "D: Reset for dividers", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
-        layerShown() {return player.m.best.gte(1)},
+        layerShown() {return player.m.best.gte(1)||player.d.unlocked},
         doReset() {
             player.d.power = new Decimal(0)
         },
@@ -303,6 +328,71 @@ addLayer("d", {
                 requirementDescription: "8 Dividers",
                 done() { return player.d.best.gte(8) },
                 effectDescription: "You can buy max dividers.",
+            }
+        }
+})
+
+
+
+addLayer("p", {
+        name: "plus", // This is optional, only used in a few places, If absent it just uses the layer id.
+        symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
+        position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+        startData() { return {
+            unlocked: true,
+            best: new Decimal(0),
+		  	points: new Decimal(0),
+        }},
+        color: "#66F542",
+        requires: new Decimal(1e10), // Can be a function that takes requirement increases into account
+        resource: "pluses", // Name of prestige currency
+        baseResource: "units", // Name of resource prestige is based on
+        baseAmount() {return player.u.points}, // Get the current amount of baseResource
+        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        exponent: 0.25, // Prestige currency exponent
+        branches: ["m"],
+        effect() {
+            var eff = new Decimal(player.p.points).sqrt().plus(1).log(5).div(2.5).max(0)
+            return eff
+        },
+        gainMult() { // Calculate the multiplier for main currency from bonuses
+            var mult = new Decimal(1)
+            return mult
+        },
+        gainExp() { // Calculate the exponent on main currency from bonuses
+            return new Decimal(1)
+        },
+        tabFormat: [["raw-html", function() {return "You have " + layerText("h2", "p", formatWhole(player.p.points)) + " pluses, which are adding +" + layerText("h4", "p", format(tmp.p.effect)) + " to the multiplier base and effect"}],
+                    "blank","prestige-button","blank",
+                    ["raw-html", function() {return "Your best pluses is " + layerText("h5", "p", formatWhole(player.p.best))}],
+                    ["raw-html", function() {return "You have gained a total of " + layerText("h5", "p", formatWhole(player.p.total)) + " pluses"}],
+                    "blank","milestones","blank","upgrades"],
+        row: 2, // Row the layer is in on the tree (0 is the first row)
+        hotkeys: [
+            {key: "p", description: "P: Reset for pluses", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        ],
+        layerShown(){return hasUpgrade("m", 14)||player.p.unlocked},
+        upgrades: {
+            rows: 1,
+            cols: 1,
+            11: {
+                title: "P1;1",
+                description: "Your total pluses boost point gain.",
+                cost: new Decimal(5),
+                effect() {return new Decimal(player.p.total).plus(500).div(500).sqrt().mul(500).sub(500).div(5).plus(1)},
+                effectDisplay() {return "x" + format(this.effect())}
+            },
+        },
+        milestones: {
+            0: {
+                requirementDescription: "2 Total Pluses",
+                done() { return player.p.total.gte(2) },
+                effectDescription: "Keep multiplier milestones on reset.",
+            },
+            1: {
+                requirementDescription: "100 Total Pluses",
+                done() { return player.p.total.gte(100) },
+                effectDescription: "Automatically buy multipliers.",
             }
         }
 })

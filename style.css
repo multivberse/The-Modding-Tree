@@ -56,21 +56,26 @@ td {
 	vertical-align: 0
 }
 
+@font-face {
+	font-family: "Typewriter";
+	src: url(https://ivark.github.io/stylesheets/MonospaceTypewriter.ttf);
+}
+
 h1, h2, h3, b, input {
 	display: inline;
-	font-family: "Lucida Console", "Courier New", monospace
+	font-family: "Typewriter", "Lucida Console", "Courier New", monospace;
 }
 
 h4 {
 	display: inline;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-family: "Typewriter", "Lucida Console", "Courier New", monospace;
 	font-size: 1.17em;
 	text-shadow: 0px 0px 10px
 }
 
 h5 {
 	display: inline;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-family: "Typewriter", "Lucida Console", "Courier New", monospace;
 	font-size: 1em;
 	text-shadow: 0px 0px 10px
 }
@@ -84,8 +89,8 @@ h5 {
 	border-color: rgba(0, 0, 0, 0.125);
 	border-radius: 50%;
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
-	font-size: 40px;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-size: 36px;
+	font-family: "Typewriter", "Lucida Console", "Courier New", monospace;
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
@@ -99,8 +104,8 @@ h5 {
 	border-color: rgba(0, 0, 0, 0.125);
 	border-radius: 33%;
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
-	font-size: 40px;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-size: 36px;
+	font-family: "Typewriter", "Lucida Console", "Courier New", monospace;
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
@@ -393,7 +398,7 @@ a {
 	color: #41f5f5;
 	text-decoration-line: none;
 	cursor: pointer;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-family: "Typewriter", "Lucida Console", "Courier New", monospace;
 	-webkit-text-stroke-width: 1px;
 	-webkit-text-stroke-color: #02f2f2;
 	text-decoration: none;
