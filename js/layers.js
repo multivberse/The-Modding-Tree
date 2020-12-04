@@ -2,13 +2,18 @@ var devSaveBank = ["eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNDM0NTE3ODA4NywiYXV0b3Nh
 "eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNTI5MjI0MjEwNiwiYXV0b3NhdmUiOnRydWUsIm5vdGlmeSI6e30sIm1zRGlzcGxheSI6ImFsd2F5cyIsIm9mZmxpbmVQcm9kIjp0cnVlLCJ2ZXJzaW9uVHlwZSI6Im15bW9kIiwidmVyc2lvbiI6IjAuMS1iZXRhIiwidGltZVBsYXllZCI6MTg1Ni43NTgwOTU1NTM5NDUyLCJrZWVwR29pbmciOmZhbHNlLCJoYXNOYU4iOmZhbHNlLCJoaWRlQ2hhbGxlbmdlcyI6ZmFsc2UsImZyYW1lcmF0ZSI6dHJ1ZSwicG9pbnRzIjoiNzEyNjQuMjUzNzAzMzA3NzciLCJzdWJ0YWJzIjp7fSwidSI6eyJ1bmxvY2tlZCI6dHJ1ZSwiYmVzdCI6IjE0MDIiLCJwb2ludHMiOiIxNDAyIiwidXBncmFkZXMiOlsxMSwxMiwxMywyMSwyMiwyMywxNF0sIm1pbGVzdG9uZXMiOltdLCJjaGFsbGVuZ2VzIjpbXSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsImFjdGl2ZUNoYWxsZW5nZSI6bnVsbH0sIm0iOnsidW5sb2NrZWQiOnRydWUsInBvaW50cyI6IjIiLCJiZXN0IjoiNSIsImJ1eWFibGVzIjp7fSwiY2xpY2thYmxlcyI6e30sInNwZW50T25CdXlhYmxlcyI6IjAiLCJ1cGdyYWRlcyI6WzExLDEyLDEzXSwibWlsZXN0b25lcyI6WyIwIl0sImFjaGlldmVtZW50cyI6W10sImNoYWxsZW5nZXMiOnt9fSwiZCI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiMiIsImJlc3QiOiIyIiwicG93ZXIiOiIxMjIuMDI4NjgzMTA2ODEzNDYiLCJidXlhYmxlcyI6e30sImNsaWNrYWJsZXMiOnt9LCJzcGVudE9uQnV5YWJsZXMiOiIwIiwidXBncmFkZXMiOlsxMV0sIm1pbGVzdG9uZXMiOltdLCJhY2hpZXZlbWVudHMiOltdLCJjaGFsbGVuZ2VzIjp7fX0sImRldlNwZWVkIjoxfQ==",
 "eyJ0YWIiOiJvcHRpb25zIiwidGltZSI6MTYwNTI5NTM1OTg1NSwiYXV0b3NhdmUiOnRydWUsIm5vdGlmeSI6e30sIm1zRGlzcGxheSI6ImFsd2F5cyIsIm9mZmxpbmVQcm9kIjp0cnVlLCJ2ZXJzaW9uVHlwZSI6Im15bW9kIiwidmVyc2lvbiI6IjAuMS1iZXRhIiwidGltZVBsYXllZCI6NDk3NC41MjYzMzgzMDc0MzQsImtlZXBHb2luZyI6ZmFsc2UsImhhc05hTiI6ZmFsc2UsImhpZGVDaGFsbGVuZ2VzIjpmYWxzZSwiZnJhbWVyYXRlIjp0cnVlLCJwb2ludHMiOiI0NDgwMjM2MzAuMjk3NzI1NSIsInN1YnRhYnMiOnt9LCJ1Ijp7InVubG9ja2VkIjp0cnVlLCJiZXN0IjoiMzcwMjgyNyIsInBvaW50cyI6IjM3MDI4MjciLCJ1cGdyYWRlcyI6WzExLDEyLDEzLDIxLDIyLDIzLDE0LDI0XSwibWlsZXN0b25lcyI6W10sImNoYWxsZW5nZXMiOltdLCJzcGVudE9uQnV5YWJsZXMiOiIwIiwiYWN0aXZlQ2hhbGxlbmdlIjpudWxsfSwibSI6eyJ1bmxvY2tlZCI6dHJ1ZSwicG9pbnRzIjoiNiIsImJlc3QiOiI2IiwiYnV5YWJsZXMiOnt9LCJjbGlja2FibGVzIjp7fSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsInVwZ3JhZGVzIjpbMTEsMTIsMTNdLCJtaWxlc3RvbmVzIjpbIjAiXSwiYWNoaWV2ZW1lbnRzIjpbXSwiY2hhbGxlbmdlcyI6e319LCJkIjp7InVubG9ja2VkIjp0cnVlLCJwb2ludHMiOiI0IiwiYmVzdCI6IjUiLCJwb3dlciI6IjM3NzEuNTIwNzYyMDA2NzY2IiwiYnV5YWJsZXMiOnt9LCJjbGlja2FibGVzIjp7fSwic3BlbnRPbkJ1eWFibGVzIjoiMCIsInVwZ3JhZGVzIjpbMTEsMTIsMTMsMTRdLCJtaWxlc3RvbmVzIjpbIjAiXSwiYWNoaWV2ZW1lbnRzIjpbXSwiY2hhbGxlbmdlcyI6e319LCJkZXZTcGVlZCI6MX0="]
 
-function progBar(amount, req, color, log=0) {
+function progBar(amount, req, color, id, log=0) {
     amount = new Decimal(amount)
     req = new Decimal(req)
+    var barColor = tmp[color].color
     var progress
     if (!log) { progress = new Decimal(amount.div(req)).mul(100) }
     else { progress = new Decimal(amount.plus(1).log10().div(req.plus(1).log10())).pow(log).mul(100) }
-    if (progress.lt(100)) { return {"background-origin": "border-box", "background-image": "linear-gradient(90deg, "+tmp[color].color+" "+progress+"%, #bf8f8f "+progress+"%)"}}
+    if (hasMilestone(color, id)) {
+        barColor = "#77bf5f"
+        progress = new Decimal(100)
+    }
+    if (progress.lt(100)) { return {"background-origin": "border-box", "background-image": "linear-gradient(90deg, "+barColor+" "+progress+"%, #bf8f8f "+progress+"%)"}}
     else return {}
 }
 
@@ -224,19 +229,19 @@ addLayer("m", {
                 requirementDescription: "5 Multipliers",
                 done() { return player.m.best.gte(5) },
                 effectDescription: "Keep unit upgrades on reset.",
-                style() {return progBar(player.m.best, 5, "m")}
+                style() {return progBar(player.m.best, 5, "m", 0)}
             },
             1: {
                 requirementDescription: "8 Multipliers",
                 done() { return player.m.best.gte(8) },
                 effectDescription: "You can buy max multipliers.",
-                style() {return progBar(player.m.best, 8, "m")}
+                style() {return progBar(player.m.best, 8, "m", 1)}
             },
             2: {
                 requirementDescription: "9 Multipliers",
                 done() { return player.m.best.gte(9) },
                 effectDescription: "You automatically gain 25% of unit gain per second.",
-                style() {return progBar(player.m.best, 9, "m")}
+                style() {return progBar(player.m.best, 9, "m", 2)}
             }
         }
 })
@@ -357,13 +362,13 @@ addLayer("d", {
                 requirementDescription: "5 Dividers",
                 done() { return player.d.best.gte(5) },
                 effectDescription: "Keep unit upgrades on reset.",
-                style() {return progBar(player.d.best, 5, "d")}
+                style() {return progBar(player.d.best, 5, "d", 0)}
             },
             1: {
                 requirementDescription: "8 Dividers",
                 done() { return player.d.best.gte(8) },
                 effectDescription: "You can buy max dividers.",
-                style() {return progBar(player.d.best, 8, "d")}
+                style() {return progBar(player.d.best, 8, "d", 1)}
             }
         }
 })
@@ -443,20 +448,20 @@ addLayer("p", {
                 requirementDescription: "2 Total Pluses",
                 done() { return player.p.total.gte(2) },
                 effectDescription: "Keep multiplier milestones on reset.",
-                style() {return progBar(player.p.total, 2, "p")}
+                style() {return progBar(player.p.total, 2, "p", 0)}
             },
             1: {
                 requirementDescription: "100 Total Pluses",
                 done() { return player.p.total.gte(100) },
                 effectDescription: "Automatically buy multipliers.",
                 toggles: [["m", "auto"]],
-                style() { return progBar(player.p.total, 100, "p") }
+                style() { return progBar(player.p.total, 100, "p", 1) }
             },
             2: {
                 requirementDescription: "1,000,000 Total Pluses",
                 done() { return player.p.total.gte(1e6) },
                 effectDescription: "Multipliers reset nothing.",
-                style() {return progBar(player.p.total, 1e6, "p", 4)}
+                style() {return progBar(player.p.total, 1e6, "p", 2, 4)}
             },
         }
 })
