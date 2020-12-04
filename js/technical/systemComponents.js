@@ -105,7 +105,7 @@ var systemComponents = {
 		<h2  class="overlayThing" id="points">{{format(player.points)}}</h2>
 		<span v-if="player.points.lt('1e1e6')"  class="overlayThing"> {{modInfo.pointsName}}</span>
 		<br>
-		<span v-if="canGenPoints()"  class="overlayThing">({{format(getPointGen())}}/sec)</span>
+		<span v-if="canGenPoints()"  class="overlayThing">({{gainFormat(getPointGen(), player.points)}}/sec)</span>
 		<div v-for="thing in tmp.displayThings" class="overlayThing"><span v-if="thing" v-html="thing"></span></div>
 	</div>
 	`
@@ -160,6 +160,7 @@ var systemComponents = {
             <tr>
                 <td><button class="opt" onclick="toggleOpt('hideChallenges')">Completed Challenges: {{ player.hideChallenges?"HIDDEN":"SHOWN" }}</button></td>
 				<td><button class="opt" onclick="toggleOpt('framerate')">Framerate: {{ FPS + " FPS" }}</button></td>
+				<td><button class="opt" onclick="toggleOpt('percentGain')">Gain Format: {{ player.percentGain?"RATE":"AMOUNT" }}</button></td>
 				<!--	<td><button class="opt" onclick="toggleOpt('oldStyle')">Style: {{ player.oldStyle?"v1.0":"NEW" }}</button></td>-->
             </tr>
         </table>`

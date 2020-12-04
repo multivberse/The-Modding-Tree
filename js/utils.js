@@ -26,6 +26,18 @@ function regularFormat(num, precision) {
 	return num.toStringWithDecimalPlaces(precision)
 }
 
+function gainFormat(num, baseRes, precision=2) {
+	num = new Decimal(num)
+	baseRes = new Decimal(baseRes)
+	if (!player.percentGain) { return format(num) }
+	else {
+		ratio = new Decimal(baseRes).plus(num).div(baseRes)
+		ratio = ratio.sub(1).exp().sub(1)
+		if (ratio.lt(10)) { return format(ratio.mul(100)) + "%" }
+		else { return format(ratio.log(10)) + " OoMs" }
+	}
+}
+
 function fixValue(x, y = 0) {
 	return x || new Decimal(y)
 }
@@ -101,6 +113,7 @@ function startPlayerBase() {
 		keepGoing: false,
 		hasNaN: false,
 		hideChallenges: false,
+		percentGain: false,
 		framerate: false,
 		showStory: true,
 		points: modInfo.initialStartPoints,
@@ -266,7 +279,7 @@ function load() {
 	updateTemp();
 	updateTemp();
 	loadVue();
-	toggleFramerate(1000/60);
+	toggleFramerate(1000/30);
 }
 
 

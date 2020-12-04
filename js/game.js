@@ -1,7 +1,7 @@
 var player;
 var needCanvasUpdate = true;
 var gameEnded = false;
-var FPS = 60;
+var FPS = 30;
 
 // Don't change this
 const TMT_VERSION = {

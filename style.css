@@ -19,6 +19,8 @@ body {
 	--background: #0f0f0f;
 	--color: #dfdfdf;
 	--points: #ffffff;
+	--locked: #bf8f8f;
+	--bought: #77bf5f;
 }
 
 html, body {
@@ -121,7 +123,7 @@ h5 {
 
 
 .locked {
-	background-color: #bf8f8f;
+	background-color: var(--locked);
 	cursor: not-allowed;
 }
 
@@ -154,7 +156,7 @@ h5 {
 }
 
 .bought {
-	background-color: #77bf5f;
+	background-color: var(--bought);
 	cursor: default;
 }
 
