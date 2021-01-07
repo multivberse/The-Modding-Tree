@@ -20,6 +20,7 @@ You can make almost any value dynamic by using a function in its place, includin
             - total: A Decimal, tracks total amount of main prestige currency. Always tracked, but only shown if you add it here.
             - best: A Decimal, tracks highest amount of main prestige currency. Always tracked, but only shown if you add it here.
             - unlockOrder: used to keep track of relevant layers unlocked before this one.
+            - resetTime: A number, time since this layer was last prestiged (or reset by another layer)
 
 - color: A color associated with this layer, used in many places. (A string in hex format with a #)
 
@@ -27,13 +28,16 @@ You can make almost any value dynamic by using a function in its place, includin
 
     Using "side" instead of a number will cause the layer to appear off to the side as a smaller node (useful for achievements and statistics). Side layers are not affected by resets unless you add a doReset to them.
 
+- displayRow: **OVERRIDE** Changes where the layer node appears without changing where it is in the reset order.
+
 - resource: Name of the main currency you gain by resetting on this layer.
 
 - effect(): **optional**. A function that calculates and returns the current values of any bonuses inherent to the main currency. Can return a value or an object containing multiple values. *You will also have to implement the effect where it is applied.*
 
 - effectDescription: **optional**. A function that returns a description of this effect. If the text stays constant, it can just be a string.
 
-- layerShown(): A function returning a bool which determines if this layer's node should be visible on the tree. It can also return "ghost", which will hide the layer, but its node will still take up space in the tree.
+- layerShown(): **optional**, A function returning a bool which determines if this layer's node should be visible on the tree. It can also return "ghost", which will hide the layer, but its node will still take up space in the tree.
+    Defaults to true.
 
 - hotkeys: **optional**. An array containing information on any hotkeys associated with this layer:
 
@@ -41,7 +45,7 @@ You can make almost any value dynamic by using a function in its place, includin
     hotkeys: [
         {
             key: "p", // What the hotkey button is. Use uppercase if it's combined with shift, or "ctrl+x" for holding down ctrl.
-            desc: "p: reset your points for prestige points", // The description of the hotkey that is displayed in the game's How To Play tab
+            description: "p: reset your points for prestige points", // The description of the hotkey that is displayed in the game's How To Play tab
             onPress() { if (player.p.unlocked) doReset("p") }
         }
     ]
@@ -72,6 +76,8 @@ You can make almost any value dynamic by using a function in its place, includin
 - achievements: Kind of like milestones, but with a different display style and some other differences. Extra features are on the way at a later date! [See here for more info.](achievements.md)
 
 - infoboxes: Displays some text in a box that can be shown or hidden. [See here for more info.](infoboxes.md)
+
+- achievementPopups, milestonePopups: **optional**, If false, disables popup message when you get the achievement/milestone. True by default.
 
 ## Prestige formula features
 
@@ -105,7 +111,7 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - onPrestige(gain): **optional**. A function that triggers when this layer prestiges, just before you gain the currency.  Can be used to have secondary resource gain on prestige, or to recalculate things or whatnot.
 
-- resetDesc: **optional**. Use this to replace "Reset for " on the Prestige button with something else.
+- resetDescription: **optional**. Use this to replace "Reset for " on the Prestige button with something else.
 
 - prestigeButtonText(): **sometimes required**. Use this to make the entirety of the text a Prestige button contains. Only required for custom layers, but usable by all types.
 
@@ -118,6 +124,8 @@ You can make almost any value dynamic by using a function in its place, includin
 ## Tree/node features
 
 - symbol: **optional**. The text that appears on this layer's node. Default is the layer id with the first letter capitalized.
+
+- image: **override**. The url (local or global) of an image that goes on the node. (Overrides symbol)
 
 - position: **optional**. Determines the horizontal position of the layer in its row in a standard tree. By default, it uses the layer id, and layers are sorted in alphabetical order.
 
@@ -156,12 +164,13 @@ componentStyles: {
 ```
 
 ## Custom Prestige type  
+(All of these can also be used by other prestige types)
 
-- getResetGain(): **for custom prestige type**. Returns how many points you should get if you reset now. You can call `getResetGain(this.layer, useType = "static")` or similar to calculate what your gain would be under another prestige type (provided you have all of the required features in the layer).
+- getResetGain(): **mostly for custom prestige type**. Returns how many points you should get if you reset now. You can call `getResetGain(this.layer, useType = "static")` or similar to calculate what your gain would be under another prestige type (provided you have all of the required features in the layer).
 
-- getNextAt(canMax=false): **for custom prestige type**. Returns how many of the base currency you need to get to the next point. `canMax` is an optional variable used with Static-ish layers to differentiate between if it's looking for the first point you can reset at, or the requirement for any gain at all (Supporting both is good). You can also call `getNextAt(this.layer, canMax=false, useType = "static")` or similar to calculate what your next at would be under another prestige type (provided you have all of the required features in the layer).
+- getNextAt(canMax=false): **mostly for custom prestige type**. Returns how many of the base currency you need to get to the next point. `canMax` is an optional variable used with Static-ish layers to differentiate between if it's looking for the first point you can reset at, or the requirement for any gain at all (Supporting both is good). You can also call `getNextAt(this.layer, canMax=false, useType = "static")` or similar to calculate what your next at would be under another prestige type (provided you have all of the required features in the layer).
 
-- canReset(): **for custom prestige type**. Return true only if you have the resources required to do a prestige here.
+- canReset(): **mostly for custom prestige type**. Return true only if you have the resources required to do a prestige here.
 
 - prestigeNotify(): **mostly for custom prestige types**, returns true if this layer should be subtly highlighted to indicate you
         can prestige for a meaningful gain.

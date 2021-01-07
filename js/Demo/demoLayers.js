@@ -15,7 +15,6 @@ addLayer("c", {
             beep: false,
         }},
         color: "#4BDC13",
-        autoUpgrade: true,
         requires: new Decimal(10), // Can be a function that takes requirement increases into account
         resource: "lollipops", // Name of prestige currency
         baseResource: "candies", // Name of resource prestige is based on
@@ -196,7 +195,7 @@ addLayer("c", {
                     let amount = getBuyableAmount(this.layer, this.id)
                     if (amount.lte(0)) return // Only sell one if there is at least one
                     setBuyableAmount(this.layer, this.id, amount.sub(1))
-                    player[this.layer].points = player[this.layer].points.add(this.cost())
+                    player[this.layer].points = player[this.layer].points.add(this.cost)
                 },
             },
         },
@@ -396,7 +395,6 @@ addLayer("f", {
     tooltipLocked() { // Optional, tooltip displays when the layer is locked
         return ("This weird farmer dinosaur will only see you if you have at least " + this.requires() + " candies. You only have " + formatWhole(player.points))
     },
-
     midsection: [
         "blank", ['display-image', 'https://images.beano.com/store/24ab3094eb95e5373bca1ccd6f330d4406db8d1f517fc4170b32e146f80d?auto=compress%2Cformat&dpr=1&w=390'],
         ["display-text", "Bork bork!"]
@@ -486,17 +484,17 @@ addLayer("a", {
         color: "yellow",
         resource: "achievement power", 
         row: "side",
-        layerShown() {return true}, 
         tooltip() { // Optional, tooltip displays when the layer is locked
             return ("Achievements")
         },
+        achievementPopups: true,
         achievements: {
             rows: 2,
             cols: 3,
             11: {
+                image: "discord.png",
                 name: "Get me!",
                 done() {return true}, // This one is a freebie
-                tooltip: "",
                 goalTooltip: "How did this happen?", // Shows when achievement is not completed
                 doneTooltip: "You did it!", // Showed when the achievement is completed
             },
@@ -505,6 +503,7 @@ addLayer("a", {
                 done() {return false},
                 goalTooltip: "Mwahahaha!", // Shows when achievement is not completed
                 doneTooltip: "HOW????", // Showed when the achievement is completed
+                textStyle: {'color': '#04e050'},
             },
             13: {
                 name: "EIEIO",

@@ -2,6 +2,8 @@
 <head>
 
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" type="text/css" href="popup.css" />
+
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
 	<script type="text/javascript" src="js/technical/break_eternity.js"></script>
@@ -28,10 +30,9 @@
 		<div v-if="(gameEnded && !player.keepGoing)" class="fullWidth">
 			<br>
 			<h2>{{modInfo.name}} {{VERSION.withoutName}}</h2><br><br>
-			<h3>Congratulations! You have reached the end and beaten this game, but for now...</h3><br>
+			<h3 v-html="modInfo.winText"></h3><br>
 			<h3>Please check the Discord to see if there are new content updates!</h3><br><br>
 			<div v-if="!player.timePlayedReset">It took you {{formatTime(player.timePlayed)}} to beat the game.</div>
-			<div v-if="player.timePlayedReset">Make sure that you record the time in your stream or else your speedrun won't count!</div>
 			<br>
 			<button class="longUpg can" onclick="hardReset(true)">Play Again</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="longUpg can" onclick="keepGoing()">Keep Going</button>
 			<br><br><br>
@@ -119,23 +120,33 @@
 			</div>
 			<overlay-head v-if="!(gameEnded && !player.keepGoing)"></overlay-head>
 			<div class="sideLayers" >
-				<div v-for="node in OTHER_LAYERS['side']"><tree-node :layer='node' :abb='tmp[node].symbol' :size="'small'"></tree-node></div>
+				<div v-for="(node, index) in OTHER_LAYERS['side']"><tree-node :layer='node' :abb='tmp[node].symbol' :size="'small'" :key="'side' + index"></tree-node></div>
 			</div>
 		</div>
 
-
-		<div v-if="!(gameEnded && !player.keepGoing)" id="treeTab" style="z-index: 0" onscroll="resizeCanvas()" v-bind:class="{ fullWidth: (player.tab == 'tree' || player.navTab == 'tree'), col: (player.tab !== 'tree' && player.navTab !== 'tree'), left: (player.tab !== 'tree' && player.navTab !== 'tree')}">
+		<div v-if="!(gameEnded && !player.keepGoing)" id="treeTab" style="z-index: 0" onscroll="resizeCanvas()" v-bind:class="{ fullWidth: (player.tab == 'none' || player.navTab == 'none'), col: (player.tab !== 'none' && player.navTab !== 'none'), left: (player.tab !== 'none' && player.navTab !== 'none')}">
 			<br><br><br><br>
 			<overlay-head id="fakeHead" style="visibility: hidden;">
 			</overlay-head>
 
-			<layer-tab :layer="player.navTab == 'tree' ? player.tab : player.navTab" ></layer-tab>
+			<layer-tab :layer="player.navTab == 'none' ? player.tab : player.navTab" :key="'left'"></layer-tab>
 
 		</div>
-		<div v-if="player.navTab !== 'tree' && player.tab !== 'tree' && !(gameEnded && !player.keepGoing)" v-bind:class="{ fullWidth: player.navTab == 'tree', col: player.navTab != 'tree', right: player.navTab != 'tree', fast: true, tab: true}">
+
+		<!-- Popups -->
+		<div class="popup-container">
+			<transition-group name="fade">
+				<div v-for="popup,index in activePopups" class="popup" v-bind:class="popup.type" v-bind:key="'p' + popup.id" v-bind:style="popup.color ? {'background-color': popup.color} : {}">
+					<h3>{{popup.title}}</h3><br>
+					<h2 v-html="popup.message"></h2>
+				</div>
+			</transition-group>
+		</div>
+
+		<div v-if="player.navTab !== 'none' && player.tab !== 'none' && !(gameEnded && !player.keepGoing)" onscroll="resizeCanvas()" v-bind:class="{ fullWidth: player.navTab == 'none', col: player.navTab != 'none', right: player.navTab != 'none', fast: true, tab: true}">
 			<div v-for="layer in LAYERS" >
 				<div v-if="player.tab==layer" >
-					<layer-tab :layer="layer" :back="'tree'" :spacing="'50px'"></layer-tab>
+					<layer-tab :layer="layer" :back="'none'" :spacing="'50px'" :key="'left'"></layer-tab>
 				</div>
 			</div>
 		</div>
