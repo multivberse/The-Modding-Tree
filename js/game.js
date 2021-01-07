@@ -385,24 +385,19 @@ function hardReset() {
 
 var ticking = false
 
-function toggleFramerate(ms) {
-	clearInterval(interval)
-	needCanvasUpdate = true;
-	interval = setInterval(function() {
-		if (player===undefined||tmp===undefined) return;
-		if (ticking) return;
-		if (gameEnded&&!player.keepGoing) return;
-		ticking = true
-		let now = Date.now()
-		let diff = (now - player.time) / 1e3
-		if (player.offTime !== undefined) {
-			if (player.offTime.remain > modInfo.offlineLimit * 3600000) player.offTime.remain = modInfo.offlineLimit * 3600000
-			if (player.offTime.remain > 0) {
-				let offlineDiff = Math.max(player.offTime.remain / 10, diff)
-				player.offTime.remain -= offlineDiff
-				diff += offlineDiff
-			}
-			if (!player.offlineProd || player.offTime.remain <= 0) delete player.offTime
+var interval = setInterval(function() {
+	if (player===undefined||tmp===undefined) return;
+	if (ticking) return;
+	if (gameEnded&&!player.keepGoing) return;
+	ticking = true
+	let now = Date.now()
+	let diff = (now - player.time) / 1e3
+	if (player.offTime !== undefined) {
+		if (player.offTime.remain > modInfo.offlineLimit * 3600) player.offTime.remain = modInfo.offlineLimit * 3600
+		if (player.offTime.remain > 0) {
+			let offlineDiff = Math.max(player.offTime.remain / 10, diff)
+			player.offTime.remain -= offlineDiff
+			diff += offlineDiff
 		}
 		if (!player.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
 	}
@@ -416,6 +411,6 @@ function toggleFramerate(ms) {
 	fixNaNs()
 	adjustPopupTime(diff)
 	ticking = false
-}, 50)
+}, 1000/30)
 
 setInterval(function() {needCanvasUpdate = true}, 500)

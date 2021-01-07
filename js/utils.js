@@ -26,18 +26,6 @@ function regularFormat(num, precision) {
 	return num.toStringWithDecimalPlaces(precision)
 }
 
-function gainFormat(num, baseRes, precision=2) {
-	num = new Decimal(num)
-	baseRes = new Decimal(baseRes)
-	if (!player.percentGain) { return format(num) }
-	else {
-		ratio = new Decimal(baseRes).plus(num).div(baseRes)
-		ratio = ratio.sub(1).exp().sub(1)
-		if (ratio.lt(10)) { return format(ratio.mul(100)) + "%" }
-		else { return format(ratio.log(10)) + " OoMs" }
-	}
-}
-
 function fixValue(x, y = 0) {
 	return x || new Decimal(y)
 }
@@ -100,7 +88,7 @@ function save() {
 function startPlayerBase() {
 	return {
 		tab: layoutInfo.startTab,
-		navTab: (layoutInfo.showTree ? "tree-tab" : "tree"),
+		navTab: (layoutInfo.showTree ? "tree-tab" : "none"),
 		time: Date.now(),
 		autosave: true,
 		notify: {},
@@ -113,12 +101,10 @@ function startPlayerBase() {
 		keepGoing: false,
 		hasNaN: false,
 		hideChallenges: false,
-		percentGain: false,
-		framerate: false,
 		showStory: true,
 		points: modInfo.initialStartPoints,
 		subtabs: {},
-		lastSafeTab: (layoutInfo.showTree ? "tree" : layoutInfo.startTab)
+		lastSafeTab: (layoutInfo.showTree ? "none" : layoutInfo.startTab)
 	}
 }
 
@@ -256,16 +242,12 @@ function fixData(defaultData, newData) {
 	}
 }
 
-var interval;
-
 function load() {
 	let get = localStorage.getItem(modInfo.id);
 	if (get===null || get===undefined) player = getStartPlayer()
 	else player = Object.assign(getStartPlayer(), JSON.parse(atob(get)))
 	fixSave()
 
-	player.tab = "tree"
-	player.devSpeed = 1
 	if (player.offlineProd) {
 		if (player.offTime === undefined) player.offTime = { remain: 0 }
 		player.offTime.remain += (Date.now() - player.time) / 1000
@@ -281,7 +263,6 @@ function load() {
 	updateTemp();
 	updateTemp();
 	loadVue();
-	toggleFramerate(1000/30);
 }
 
 function setupModInfo() {
@@ -416,11 +397,6 @@ function toggleOpt(name) {
 	player[name] = !player[name]
 	if (name == "hqTree") changeTreeQuality()
 	if (name == "oldStyle") updateStyle()
-	if (name == "framerate") {
-		let frame = [10, 15, 20, 25, 30, 40, 50, 60, "Max"];
-		FPS = frame[(frame.indexOf(FPS)+1)%9]
-		toggleFramerate((frame.indexOf(FPS) == 8) ? 0 : 1000/FPS)
-	}
 }
 
 var styleCooldown = 0;
@@ -664,13 +640,7 @@ function showTab(name) {
 	}
 	var toTreeTab = name == "none"
 	player.tab = name
-
-	if (toTreeTab != onTreeTab) {
-		document.getElementById("treeTab").className = toTreeTab ? "fullWidth" : "col left"
-		onTreeTab = toTreeTab
-		resizeCanvas()
-	}
-	if (player.navTab == "tree" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
+	if (player.navTab == "none" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
 	delete player.notify[name]
 	needCanvasUpdate = true
 	document.activeElement.blur()
@@ -687,7 +657,7 @@ function showNavTab(name) {
 
 
 function goBack() {
-	if (player.navTab !== "tree") showTab("tree")
+	if (player.navTab !== "none") showTab("none")
 	else showTab(player.lastSafeTab)
 }
 

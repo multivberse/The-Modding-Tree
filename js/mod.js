@@ -1,7 +1,7 @@
 let modInfo = {
-	name: "The Unit Tree",
+	name: "The Polygonal Tree",
 	id: "mymod",
-	author: "nobody",
+	author: "MVBit",
 	pointsName: "points",
 	discordName: "",
 	discordLink: "",
@@ -12,8 +12,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2-beta.1",
-	name: "Addition",
+	num: "0.0",
+	name: "Oh, we're just getting started?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -33,7 +33,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return (hasUpgrade("u", 11))
+	return true
 }
 
 // Calculate points/sec!
@@ -42,10 +42,7 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	if (hasUpgrade("u", 12)) gain = gain.times(upgradeEffect("u", 12))
-	if (hasUpgrade("u", 13)) gain = gain.times(upgradeEffect("u", 13))
-	if (hasUpgrade("p", 11)) gain = gain.times(upgradeEffect("p", 11))
-	gain = gain.times(tmp.m.effect)
+	if (hasUpgrade("l", 11)) gain = gain.mul(upgradeEffect("l", 11))
 	return gain
 }
 
