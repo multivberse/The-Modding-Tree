@@ -5,15 +5,15 @@ let modInfo = {
 	pointsName: "points",
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Oh, we're just getting started?",
+	num: "0.1",
+	name: "Triangle",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -32,19 +32,7 @@ function getStartPoints(){
 }
 
 // Determines if it should show points/sec
-function canGenPoints(){
-	return true
-}
 
-// Calculate points/sec!
-function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-
-	let gain = new Decimal(1)
-	if (hasUpgrade("l", 11)) gain = gain.mul(upgradeEffect("l", 11))
-	return gain
-}
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {

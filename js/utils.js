@@ -36,7 +36,7 @@ function sumValues(x) {
 	return x.reduce((a, b) => Decimal.add(a, b))
 }
 
-function format(decimal, precision=2,) {
+function format(decimal, precision=3,) {
 	decimal = new Decimal(decimal)
 	if (isNaN(decimal.sign)||isNaN(decimal.layer)||isNaN(decimal.mag)) {
 		player.hasNaN = true;
@@ -49,8 +49,8 @@ function format(decimal, precision=2,) {
 		if (slog.gte(1e6)) return "F" + format(slog.floor())
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0)
 	}
-	else if (decimal.gte("1e100000")) return exponentialFormat(decimal, 0, false)
-	else if (decimal.gte("1e1000")) return exponentialFormat(decimal, 0)
+	else if (decimal.gte("1e1000000")) return exponentialFormat(decimal, 0, false)
+	else if (decimal.gte("1e1000")) return exponentialFormat(decimal, 2)
 	else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
 	else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
 	else return regularFormat(decimal, precision)
