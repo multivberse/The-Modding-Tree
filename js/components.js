@@ -154,22 +154,23 @@ function loadVue() {
 	})
 
 	// data = id
+	// 'background-origin':'border-box','background-image':'conic-gradient(' + tmp[layer].color + ' ' + tmp[layer].points.div(tmp[layer].upgrades[data].cost).mul(100) '%, rgba(0, 0, 0, 0) ' + tmp[layer].points.div(tmp[layer].upgrades[data].cost).mul(100) + '%)'
 	Vue.component('upgrade', {
 		props: ['layer', 'data'],
 		template: `
 		<button v-if="tmp[layer].upgrades && tmp[layer].upgrades[data]!== undefined && tmp[layer].upgrades[data].unlocked" v-on:click="buyUpg(layer, data)" v-bind:class="{ [layer]: true, upg: true, bought: hasUpgrade(layer, data), locked: (!(canAffordUpgrade(layer, data))&&!hasUpgrade(layer, data)), can: (canAffordUpgrade(layer, data)&&!hasUpgrade(layer, data))}"
 			v-bind:tooltip="
-				(tmp[layer].upgrades[data].tooltip == '') ? false : hasUpgrade(layer, data) ? (tmp[layer].upgrades[data].tooltip ? tmp[layer].upgrades[data].tooltip : false)
+				(tmp[layer].upgrades[data].tooltip == '') ? false : hasUpgrade(layer, data) ? (tmp[layer].upgrades[data].tooltip ? tmp[layer].upgrades[data].tooltip : (tmp[layer].upgrades[data].effect ? 'Currently: ' + format(tmp[layer].upgrades[data].effect) : false))
 				: (tmp[layer].upgrades[data].tooltip ? tmp[layer].upgrades[data].tooltip : false)
 			"
 
-			v-bind:style="[((!hasUpgrade(layer, data) && canAffordUpgrade(layer, data)) ? {'background-color': tmp[layer].color} : {}), tmp[layer].upgrades[data].style]">
+			v-bind:style="[((!hasUpgrade(layer, data) && canAffordUpgrade(layer, data)) ? {'background-color': tmp[layer].color} : (!hasUpgrade(layer, data) && !canAffordUpgrade(layer, data) ? {} : {})), tmp[layer].upgrades[data].style]">
 			<span v-if="tmp[layer].upgrades[data].fullDisplay" v-html="tmp[layer].upgrades[data].fullDisplay"></span>
 			<span v-else>
 				<span v-if= "tmp[layer].upgrades[data].title"><h3 v-html="tmp[layer].upgrades[data].title"></h3><br></span>
 				<span v-html="tmp[layer].upgrades[data].description"></span>
-				<span v-if="tmp[layer].upgrades[data].effectDisplay"><br>Currently: <span v-html="tmp[layer].upgrades[data].effectDisplay"></span></span>
-				<br><br>Cost: {{ formatWhole(tmp[layer].upgrades[data].cost) }} {{(tmp[layer].upgrades[data].currencyDisplayName ? tmp[layer].upgrades[data].currencyDisplayName : tmp[layer].resource)}}
+				<span v-if="tmp[layer].upgrades[data].effectDisplay"><br><small>CURRENTLY: </small><span v-html="tmp[layer].upgrades[data].effectDisplay"></span></span>
+				<br><br><small>COST: </small>{{ formatWhole(tmp[layer].upgrades[data].cost) }} {{(tmp[layer].upgrades[data].currencyDisplayName ? tmp[layer].upgrades[data].currencyDisplayName : tmp[layer].resource)}}
 			</span>
 			</button>
 		`
@@ -265,8 +266,14 @@ function loadVue() {
 			<button v-bind:class="{ buyable: true, can: tmp[layer].buyables[data].canAfford, locked: !tmp[layer].buyables[data].canAfford}"
 			v-bind:style="[tmp[layer].buyables[data].canAfford ? {'background-color': tmp[layer].color} : {}, size ? {'height': size, 'width': size} : {}, tmp[layer].componentStyles.buyable, tmp[layer].buyables[data].style]"
 			v-on:click="buyBuyable(layer, data)">
-				<span v-if= "tmp[layer].buyables[data].title"><h2 v-html="tmp[layer].buyables[data].title"></h2><br></span>
-				<span v-bind:style="{'white-space': 'pre-line'}" v-html="tmp[layer].buyables[data].display"></span>
+				<span v-if= "tmp[layer].buyables[data].title"><h3 v-html="tmp[layer].buyables[data].title"></h3><br></span>
+				<span v-if="tmp[layer].buyables[data].display" v-bind:style="{'white-space': 'pre-line'}" v-html="tmp[layer].buyables[data].display"></span>
+			<span v-else>
+				<span v-html="tmp[layer].buyables[data].description"></span>
+				<br><br><small>AMOUNT: </small>{{ formatWhole(getBuyableAmount(layer, data)) }}
+				<span v-if="tmp[layer].buyables[data].effectDisplay"><br><small>EFFECT: </small><span v-html="tmp[layer].buyables[data].effectDisplay"></span></span>
+				<br><small>COST: </small>{{ formatWhole(tmp[layer].buyables[data].cost) }} {{(tmp[layer].buyables[data].currencyDisplayName ? tmp[layer].buyables[data].currencyDisplayName : tmp[layer].resource)}}
+			</span>
 			</button>
 			<br v-if="(tmp[layer].buyables[data].sellOne !== undefined && !(tmp[layer].buyables[data].canSellOne !== undefined && tmp[layer].buyables[data].canSellOne == false)) || (tmp[layer].buyables[data].sellAll && !(tmp[layer].buyables[data].canSellAll !== undefined && tmp[layer].buyables[data].canSellAll == false))">
 			<sell-one :layer="layer" :data="data" v-bind:style="tmp[layer].componentStyles['sell-one']" v-if="(tmp[layer].buyables[data].sellOne)&& !(tmp[layer].buyables[data].canSellOne !== undefined && tmp[layer].buyables[data].canSellOne == false)"></sell-one>

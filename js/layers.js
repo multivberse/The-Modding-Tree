@@ -22,7 +22,7 @@ addLayer("l", {
 		points: new Decimal(0),
     }},
     color: "rgb(65, 124, 242)",
-    requires: new Decimal(5), // Can be a function that takes requirement increases into account
+    requires: new Decimal(10), // Can be a function that takes requirement increases into account
     resource: "lines", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -30,6 +30,7 @@ addLayer("l", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+		mult = mult.mul(buyableEffect("l", 11))
         if (hasUpgrade("t", 11)) mult = mult.times(upgradeEffect("t", 11))
         return mult
     },
@@ -41,10 +42,18 @@ addLayer("l", {
         {key: "l", description: "L: Reset for lines", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-    tabFormat: [["raw-html", function() {return "You have " + layerText("h2", "l", formatWhole(player.l.points)) + " lines"}],
+    tabFormat: {
+		"Upgrades": {
+			content: [["raw-html", function() {return "You have " + layerText("h2", "l", formatWhole(player.l.points)) + " lines"}],
                     "blank","prestige-button","blank",
                    ["raw-html", function() {return (player.l.points.lt(1000))?("You have <h5 id='color:#ffffff;'>" + formatWhole(player.points) + "</h5> points"):""}],
                     "blank","upgrades"],
+			},
+		"Buyables": {
+			content: [["raw-html", function() {return "You have " + layerText("h2", "l", formatWhole(player.l.points)) + " lines"}],
+                    "blank","buyables"],
+			},
+		},
     upgrades: {
         rows: 4,
         cols: 4,
@@ -56,7 +65,7 @@ addLayer("l", {
                 if (hasUpgrade("l", 12)) eff = eff.times(tmp.l.upgrades[12].effect)
                 return eff
             },
-            tooltip() {return "Currently: x" + format(this.effect())}
+            tooltip() {return "Currently: x" + format(this.effect())},
         },
         12: {
             description: "Boost the previous upgrade based on bought upgrades.",
@@ -74,28 +83,22 @@ addLayer("l", {
             cost: new Decimal(20),
             effect() {
                 let eff = new Decimal(player.points).add(1).log(2).add(1)
-                if (hasUpgrade("l", 14)) eff = eff.times(tmp.l.upgrades[14].effect)
+                if (hasUpgrade("l", 21)) eff = eff.times(tmp.l.upgrades[21].effect)
                 return eff
             },
             tooltip() {return "Currently: x" + format(this.effect())},
             unlocked() {return (hasUpgrade("l", 12))}
         },
-        14: {
-            description: "Boost the previous upgrade based on time spent since reset.",
+		14: {
+			description: "Unlock the first line buyable.",
+			cost: new Decimal(60),
+			unlocked() {return (hasUpgrade("l", 13))}
+		},
+        21: {
+            description: "Boost the previous boost upgrade based on time spent since reset.",
             cost: new Decimal(100),
             effect() {
                 let eff = new Decimal(player.l.resetTime).add(1).pow(0.25)
-                if (hasUpgrade("l", 21)) eff = eff.times(tmp.l.upgrades[21].effect)
-                return eff
-            },
-            tooltip() {return "Currently: x" + format(this.effect())},
-            unlocked() {return (hasUpgrade("l", 13))}
-        },
-        21: {
-            description: "Boost the previous upgrade based on your total lines.",
-            cost: new Decimal(400),
-            effect() {
-                let eff = new Decimal(player.l.total).add(1).pow(1/3)
                 if (hasUpgrade("l", 22)) eff = eff.times(tmp.l.upgrades[22].effect)
                 return eff
             },
@@ -103,15 +106,42 @@ addLayer("l", {
             unlocked() {return (hasUpgrade("l", 14))}
         },
         22: {
+            description: "Boost the previous upgrade based on your total lines.",
+            cost: new Decimal(400),
+            effect() {
+                let eff = new Decimal(player.l.total).add(1).pow(1/3)
+                if (hasUpgrade("l", 23)) eff = eff.times(tmp.l.upgrades[23].effect)
+                return eff
+            },
+            tooltip() {return "Currently: x" + format(this.effect())},
+            unlocked() {return (hasUpgrade("l", 21))}
+        },
+        23: {
             description: "Boost the previous upgrade based on your points (again).",
             cost: new Decimal(2000),
             effect() {
                 return new Decimal(player.points).add(1).log(3).add(1)
             },
             tooltip() {return "Currently: x" + format(this.effect())},
-            unlocked() {return (hasUpgrade("l", 21))}
+            unlocked() {return (hasUpgrade("l", 22))}
         },
     },
+	buyables: {
+		rows: 2,
+		cols: 2,
+		11: {
+			title: "Parallel Lines",
+	        cost() { return new Decimal(100).mul(Decimal.pow(2.5, getBuyableAmount(this.layer, this.id))) },
+			description: "Boost line gain.",
+			effect() { return Decimal.pow(1.5, getBuyableAmount(this.layer, this.id)) },
+			effectDisplay() {return "x" + format(this.effect()) + " line gain"},
+	        canAfford() { return player[this.layer].points.gte(this.cost()) },
+	        buy() {
+	            player[this.layer].points = player[this.layer].points.sub(this.cost())
+	            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        	},
+		},
+	},
     doReset(rLayer) {
         if (rLayer == "l") player.l.resetTime = 0
         if (layers[rLayer].row > this.row) {
